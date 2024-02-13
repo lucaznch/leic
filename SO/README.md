@@ -53,7 +53,7 @@ O IST-EMS irá também interagir com o sistema de ficheiros oferecendo portanto 
 
 Comentários no Input:
 Linhas iniciadas com o caractere ‘**#**’ são consideradas comentários e são ignoradas pelo processador de comandos (uteis para os testes).
-    * Exemplo: ‘# Isto é um comentário e será ignorado’.
+- Exemplo: ‘# Isto é um comentário e será ignorado’.
 
 
 # PARTE 1
@@ -218,7 +218,7 @@ Diferentes programas cliente podem existir, todos eles invocando a API acima ind
 * Os processos cliente são corretos, ou seja cumprem a especificação que é descrita no resto deste documento. Em particular, assume-se que nenhum cliente envia mensagens com formato fora do especificado.
 
 
-![api](src/api.png)
+![api](api.png)
 
 ### Protocolo de pedidos-respostas
 O conteúdo de cada mensagem (de pedido e resposta) deve seguir o seguinte formato:
