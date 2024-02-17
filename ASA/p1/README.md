@@ -25,7 +25,7 @@ Além disso, o Eng. Caracol tem acesso a uma lista com os **n** tipos de peças 
 
 Cada tipo de peça **i ∈ {1, ..., n}** corresponde a um retângulo de mármore com dimensões **ai × bi** e é vendido a um preço **pi**.
 
-Nota: **as peças podem ser rodas => 2x3 <=> 3x2**
+Nota: **as peças podem ser rodadas => 2x3 <=> 3x2**
 
 
 ## Input
