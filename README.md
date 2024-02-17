@@ -23,26 +23,3 @@
 
 > [!NOTE]
 > the abbreviations were kept in portuguese
-
-
-
-# Objetivos
-
-1. Procurar estágios
-    - idealmente no verão e nos países baixos
-
-
-
-2. Construir CV
-    - melhorar GitHub
-        - https://github.com/diogotcorreia
-        - https://github.com/Calhau18
-        - https://github.com/randomicecube
-    - contruir Linkedin
-
-
-
-
-3. projetos!
-    - hash table
-    - jogo 2D
