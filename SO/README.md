@@ -1,6 +1,3 @@
-> [!NOTE]
-> existem várias versões do projeto neste repositório, mas apenas os directórios "p1_final" e "p2_final" contêm os programas finais para a parte 1 e 2 do projeto.
-
 # IST "Event Management System" (IST-EMS)
 
 ### O objetivo deste projeto é desenvolver o IST-EMS, um sistema de gestão de eventos que permite a criação, reserva e verificação de disponibilidade de bilhetes para eventos, como concertos e espetáculos teatrais.
