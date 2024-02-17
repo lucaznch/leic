@@ -1,5 +1,5 @@
 # Projects
-## Computer Science and Engineering at the Instituto Superior Técnico of the University of Lisbon
+## Computer Science and Engineering at Instituto Superior Técnico of the University of Lisbon
 
 *Here you can find some projects I did during the course*
 
