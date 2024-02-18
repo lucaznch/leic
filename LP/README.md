@@ -1,3 +1,5 @@
+### Language: Prolog
+
 ## Part 1 - Event Management
 
 Check [pdf](description.pdf) for more information
