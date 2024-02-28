@@ -1,3 +1,6 @@
+> [!NOTE]
+> this is a mirror of [this repository](https://github.com/lucaznch/SO)
+
 # IST "Event Management System" (IST-EMS)
 
 ### O objetivo deste projeto é desenvolver o IST-EMS, um sistema de gestão de eventos que permite a criação, reserva e verificação de disponibilidade de bilhetes para eventos, como concertos e espetáculos teatrais.
