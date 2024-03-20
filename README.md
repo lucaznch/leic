@@ -16,6 +16,7 @@
 | __PO__ | object-oriented programming |
 | __ASA__ | analysis and synthesis of algorithms |
 | __SO__ | operating systems |
+| __IPM__ | human–computer interaction |
 
 
 > [!IMPORTANT]
