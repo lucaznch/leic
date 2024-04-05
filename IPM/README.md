@@ -31,10 +31,10 @@ It is necessary to change the base code provided so that users select targets as
 ## 3. Our implementation
 In the current directory, you will find the base code.
 However, we made 4 interfaces while looking for the most efficient one.
-- we have [this](grouped-by-columns/sketch.js) interface, where it is grouped by **columns**
-- we have [this](grouped-by-rows/sketch.js) interface, where it is grouped by **rows**
-- we have [this](grouped-by-menus-preffix/sketch.js) interface, where it is grouped by **menus**, organized by **preffix**
-- we have [this](grouped-by-menus-suffix/sketch.js) interface, where it is grouped by **menus**, organized by **suffix**
+- we have [this](grouped-by-columns/) interface, where it is grouped by **columns**
+- we have [this](grouped-by-rows/) interface, where it is grouped by **rows**
+- we have [this](grouped-by-menus-preffix/) interface, where it is grouped by **menus**, organized by **preffix**
+- we have [this](grouped-by-menus-suffix/) interface, where it is grouped by **menus**, organized by **suffix**
 
 ### the interface we chose was the one grouped by menus, organized by the suffix!
 
