@@ -6,7 +6,7 @@
 ### 1st year
 | abbreviation | meaning |
 |:---:|:---|
-| __LP__ | logic for programming |
+| [__LP__](LP/) | logic for programming |
 | __IAED__ | introduction to algorithms and data structures |
 | __IAC__ | introduction to computer architecture |
 
@@ -17,10 +17,3 @@
 | __ASA__ | analysis and synthesis of algorithms |
 | __SO__ | operating systems |
 | __IPM__ | human–computer interaction |
-
-
-> [!IMPORTANT]
-> Note that for each of the projects here, their implementations correspond to the latest version until they were submitted for evaluation by the corresponding subject
-
-> [!NOTE]
-> the abbreviations were kept in portuguese
