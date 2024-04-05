@@ -7,13 +7,13 @@
 | abbreviation | meaning |
 |:---:|:---|
 | [__LP__](LP/) | logic for programming |
-| __IAED__ | introduction to algorithms and data structures |
-| __IAC__ | introduction to computer architecture |
+| [__IAED__](IAED/) | introduction to algorithms and data structures |
+| [__IAC__](IAC/) | introduction to computer architecture |
 
 ### 2nd year
 | abbreviation | meaning |
 |:---:|:---|
-| __PO__ | object-oriented programming |
-| __ASA__ | analysis and synthesis of algorithms |
-| __SO__ | operating systems |
-| __IPM__ | human–computer interaction |
+| [__PO__](PO/) | object-oriented programming |
+| [__ASA__](ASA/) | analysis and synthesis of algorithms |
+| [__SO__](SO/) | operating systems |
+| [__IPM__](IPM/) | human–computer interaction |
