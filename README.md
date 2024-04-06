@@ -1,7 +1,6 @@
-# Projects
-## Computer Science and Engineering at Instituto Superior Técnico of the University of Lisbon
+## Computer Science and Engineering at Instituto Superior Técnico
 
-*Here you can find some projects I did during the course*
+Here you can find some projects I did during the course
 
 ### 1st year
 | abbreviation | meaning |
