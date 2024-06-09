@@ -10,7 +10,7 @@ The first delivery is divided into three exercises:
 
 <br>
 
-check [here](p1/) for details
+check [p1](p1/) for details
 
 <br>
 <br>
@@ -27,4 +27,4 @@ The second delivery is divided into six exercises:
 
 <br>
 
-check [here](p2/) for details
+check [p2](p2/) for details
