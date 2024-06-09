@@ -2,7 +2,7 @@
 > this is a mirror of [this repository](https://github.com/jorgeflmendes/BD-23-24)
 
 
-# First Delivery of Databases (2023/24)
+# Delivery 2
 The first delivery is divided into three exercises:
 - **1. Entity-Association Modeling**
 - **2. E-A Conversion -&gt; Relational**
@@ -10,13 +10,13 @@ The first delivery is divided into three exercises:
 
 <br>
 
-check [here](p2/) for details
+check [here](p1/) for details
 
 <br>
 <br>
 
 
-# Databases - 2023/2024- Project - Delivery 2
+# Delivery 2
 The second delivery is divided into six exercises:
 - **1. Integrity Constraints**
 - **2. Completing the Database**
