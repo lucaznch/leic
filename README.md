@@ -16,3 +16,5 @@ Here you can find some projects I did during the course
 | [__ASA__](ASA/) | analysis and synthesis of algorithms |
 | [__SO__](SO/) | operating systems |
 | [__IPM__](IPM/) | human–computer interaction |
+| [__IArt__](IArt/) | artificial intelligence |
+
