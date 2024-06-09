@@ -2,7 +2,7 @@
 > this is a mirror of [this repository](https://github.com/jorgeflmendes/BD-23-24)
 
 
-# Delivery 2
+# Delivery 1
 The first delivery is divided into three exercises:
 - **1. Entity-Association Modeling**
 - **2. E-A Conversion -&gt; Relational**
