@@ -577,11 +577,11 @@ $$
 | Jill    |
 
 ### Cartesian Product / Cross-Join.
-\( r \times s \)
+$r \times s$
 
-- **Binary operation** that **combines all tuples of one relation with all tuples of a second relation**
-- Cartesian product is a commutative operator (r×s=s×r)
-- Cartesian product is an associative operator (r × (s × t )= (r × s) × t)
+- **Binary operation** that **combines** all tuples of one relation with all tuples of a second relation.
+    - Forms all possible pairs of tuples from the two relations.
+- The operation is commutative and associative.
 
 Consider the following **professor** and **teaches** relationship
 
@@ -600,7 +600,9 @@ Consider the following **professor** and **teaches** relationship
 | 3    | NPH-315     |
 - 3 tuples, 2 attributes.
 
-**5. professor × teaches**
+**5. All (professor, teaches) pairs, related or not**
+
+$professor \times teaches$
 
 | `professor.ID` | `name`      | `dept`     | `salary` | `teaches.ID` | `course` |
 | -------------- | ------------| ---------- | -------- | -----------: | -------: |
@@ -612,6 +614,51 @@ Consider the following **professor** and **teaches** relationship
 | 4              | Joan        | Biology    | 82000    | 1            | BCH-101  |
 | 4              | Joan        | Biology    | 82000    | 3            | NPH-315  |
 - 4 x 3 = 12 tuples, 4 + 2 = 6 attributes.
+
+
+
+**6. All (professor, teaches) RELATED pairs**
+
+$ \sigma_{\text{professor.id}=\text{teaches.id}} (\text{professor} \times \text{teaches}) $
+
+| `professor.ID` | `name`      | `dept`     | `salary` | `teaches.ID` | `course` |
+| -------------- | ------------| ---------- | -------- | -----------: | -------: |
+| 1              | John        | Chemistry  | 65000    | 1            | OCH-101  |
+| 2              | John        | Chemistry  | 65000    | 1            | BCH-101  |
+| 3              | Jill        | Physics    | 82000    | 3            | NPH-315  |
+
+<br>
+
+**8. Easier example to see the cartesian product**
+
+
+<div class="side-by-side">
+
+| `A` |
+| --- |
+| 1   |
+| 2   |
+| 3   |
+
+$\times$
+
+| `B` | `C` |
+| --- | --- |
+| a   | X   |
+| b   | Y   |
+
+$=$
+
+| `A` | `B` | `C` |
+| --- | --- | --- |
+| 1   | a   | X   |
+| 1   | b   | Y   |
+| 2   | a   | X   |
+| 2   | b   | Y   |
+| 3   | a   | X   |
+| 3   | b   | Y   |
+
+</div>
 
 
 
