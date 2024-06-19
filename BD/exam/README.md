@@ -563,14 +563,61 @@ $$
 | 82000    |
 | 65000    |
 
-> [!NOTE]
-> Also note the exclusion of the duplicate tuple “82000”
+>  Note the exclusion of the duplicate tuple “82000”
 
 **4. Select the names of all professors in the Physics department**
 
 $$
 \Pi_{\text{name}} (\sigma_{\text{dept}="Physics"} (\text{professor}))
 $$
+
+| `name`  |
+| ------- |
+| Jack    |
+| Jill    |
+
+### Cartesian Product / Cross-Join.
+\( r \times s \)
+
+- **Binary operation** that **combines all tuples of one relation with all tuples of a second relation**
+- Cartesian product is a commutative operator (r×s=s×r)
+- Cartesian product is an associative operator (r × (s × t )= (r × s) × t)
+
+Consider the following **professor** and **teaches** relationship
+
+| `ID` | `name`      | `dept`    | `salary` |
+| ---- | ------------| --------: | -------: |
+| 1    | John        | Chemistry | 65000    |
+| 2    | Jack        | Physics   | 95000    |
+| 3    | Jill        | Physics   | 82000    |
+| 4    | Joan        | Biology   | 82000    |
+- 4 tuples, 4 attributes
+
+| `ID` | `course`    |
+| ---- | ------------|
+| 1    | OCH-101     |
+| 2    | BCH-101     |
+| 3    | NPH-315     |
+- 3 tuples, 2 attributes.
+
+**5. professor × teaches**
+
+| `professor.ID` | `name`      | `dept`     | `salary` | `teaches.ID` | `course` |
+| -------------- | ------------| ---------- | -------- | -----------: | -------: |
+| 1              | John        | Chemistry  | 65000    | 1            | OCH-101  |
+| 2              | John        | Chemistry  | 65000    | 1            | BCH-101  |
+| 3              | John        | Chemistry  | 65000    | 3            | NPH-315  |
+| ...            | ...         | ...        | ...      | ...          | ...      |
+| 4              | Joan        | Biology    | 82000    | 1            | OCH-101  |
+| 4              | Joan        | Biology    | 82000    | 1            | BCH-101  |
+| 4              | Joan        | Biology    | 82000    | 3            | NPH-315  |
+- 4 x 3 = 12 tuples, 4 + 2 = 6 attributes.
+
+
+
+<br>
+<br>
+<br>
 
 ## Structured Query Language (SQL)
 
