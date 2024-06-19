@@ -475,32 +475,11 @@ Since the result of each operation is a relation, relational algebra operations 
 A **relational (algebraic) expression** takes one or more relations and returns only one relation.
 
 
-| Name                     | Representation                                    |
-| ------------------------ | ------------------------------------------------- |
-| Empty relation           | $\emptyset$                                       |
-| Relation Literal         | $\{\lang v_1, \dots, v_n\rang, \dots \}$          |
-| Relation Name/_relval_   | $r$                                               |
-| Selection                | $\sigma_c(r)$                                     |
-| Projection               | $\pi_{A_1, \dots, A_n}(r)$                        |
-| Generalized Projection   | $\pi_{F_1, \dots, F_n}(r)$                        |
-| Renaming                 | $\rho_{A_1\mapsto B_1,\dots, A_m \mapsto B_m}(r)$ |
-| Union                    | $r \cup s$                                        |
-| Difference               | $r - s$                                           |
-| Intersection             | $r \cap s$                                        |
-| Cartesian Product        | $r \times s$                                      |
-| Division                 | $r \div s$                                        |
-| Attribution              | $r \leftarrow E$                                  |
-| _Natural Join_           | $\bowtie$                                         |
-| Aggregation              | $_L G_{F}(r)$                                     |
-
 #### Select $\sigma_p(r)$
 - Unary operation that selects tuples from a relation that satisfy a given predicate
 - Similar to `WHERE`
 
-
-:::info[Example]
-
-**Professor relationship**
+Consider the following **Professor relationship**
 
 | `ID` | `name`      | `dept`    | `salary` |
 | ---- | ------------| --------: | -------: |
@@ -509,29 +488,29 @@ A **relational (algebraic) expression** takes one or more relations and returns 
 | 3    | Jill        | Physics   | 82000    |
 | 4    | Joan        | Biology   | 82000    |
 
-- **select all professors from the Physics department**
+<br>
 
+**select all professors from the Physics department**
 
-    $$
-    \sigma_{\text{dept}="Physics"} (\text{professor})
-    $$
+$$
+\sigma_{\text{dept}="Physics"} (\text{professor})
+$$
 
-    | `ID` | `name`      | `dept`    | `salary` |
-    | ---- | ------------| --------: | -------: |
-    | 2    | Jack        | Physics   | 95000    |
-    | 3    | Jill        | Physics   | 82000    |
+| `ID` | `name`      | `dept`    | `salary` |
+| ---- | ------------| --------: | -------: |
+| 2    | Jack        | Physics   | 95000    |
+| 3    | Jill        | Physics   | 82000    |
 
-- **Select products with a price equal to or less than 50 cents and stock greater than 5**
+**Select products with a price equal to or less than 50 cents and stock greater than 5**
 
-    $$
-    \sigma_{\text{dept}="Physics" \land \text{salary} > 90000} (\text{professor})
-    $$
+$$
+\sigma_{\text{dept}="Physics" \land \text{salary} > 90000} (\text{professor})
+$$
 
-    | `ID` | `name`      | `dept`    | `salary` |
-    | ---- | ------------| --------: | -------: |
-    | 2    | Jack        | Physics   | 95000    |
+| `ID` | `name`      | `dept`    | `salary` |
+| ---- | ------------| --------: | -------: |
+| 2    | Jack        | Physics   | 95000    |
 
-:::
 
 
 
