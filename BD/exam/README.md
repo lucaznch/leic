@@ -11,6 +11,8 @@ This summary was made as a way to study for my exam, and definitely not to use i
 3. [E-A Conversion](#e-a-relational-conversion)
     * [Association Conversion](#conversion)
 4. [Relational Algebra](#relational-algebra)
+    * [Select](#select)
+    * [Project](#project)
 5. [SQL](#structured-query-language-sql)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
@@ -493,11 +495,14 @@ Since the result of each operation is a relation, relational algebra operations 
 A **relational (algebraic) expression** takes one or more relations and returns only one relation.
 
 
-#### Select $\sigma_p(r)$
-- Unary operation that selects tuples from a relation that satisfy a given predicate
+#### Select
+**Select $\sigma_p(r)$**
+- **Unary operation** that **selects tuples from a relation** that satisfy a given **predicate**
+    - where **p** is the selection **predicate** over the **r relation**
 - Similar to `WHERE`
 - Comparison operators are allowed: `=, ≠, >, ≥, <, ≤`
 - Predicates can be composed using the logical operators: `∧, ∨, ¬`
+- the operation is commutative
 
 Consider the following **professor** relationship
 
@@ -532,243 +537,37 @@ $$
 | ---- | ------------| --------: | -------: |
 | 2    | Jack        | Physics   | 95000    |
 
-
-
-
-
-
-
-
-
-
-
-<br>
-<br>
 <br>
 
-### SQL
+### Project
+**Project $ \Pi_{\text{A1,...,Ak}} (\text{r}) $**
+- **Unary operation** that **returns a projection** of the argument relation into a lower dimensional space, i.e., with only the listed attributes
+    - where each **Ai is an attribute name** of the **relation r**
+- similar to `SELECT`
+- The **result is defined as the relationship obtained by removing all unlisted attributes from the original relationship**
+- **Duplicate rows are removed from the result**, as the **result must be a relationship**.
+- the operation is not commutative
 
-SQL (Structured Query Language) is a domain-specific language used in programming and managing relational databases. It provides commands to perform operations defined by relational algebra and more. SQL operations that correspond to relational algebra operations include:
+**3. Selects only the salary (or exclude everything but the salary) of teachersr**
 
-1. **Selection**: Implemented using the `WHERE` clause.
-   - **Relational Algebra**: σ_condition(R)
-   - **SQL**: `SELECT * FROM R WHERE condition;`
+$$
+\Pi_{\text{salary}} (\text{professor})
+$$
 
-2. **Projection**: Implemented using the `SELECT` clause with specific columns.
-   - **Relational Algebra**: π_column1, column2, ...(R)
-   - **SQL**: `SELECT column1, column2, ... FROM R;`
+| `salary` |
+| -------- |
+| 95000    |
+| 82000    |
+| 65000    |
 
-3. **Union**: Implemented using the `UNION` operator.
-   - **Relational Algebra**: R ∪ S
-   - **SQL**: `SELECT * FROM R UNION SELECT * FROM S;`
+> [!NOTE]
+> Also note the exclusion of the duplicate tuple “82000”
 
-4. **Intersection**: Implemented using the `INTERSECT` operator.
-   - **Relational Algebra**: R ∩ S
-   - **SQL**: `SELECT * FROM R INTERSECT SELECT * FROM S;`
+**4. Select the names of all professors in the Physics department**
 
-5. **Difference**: Implemented using the `EXCEPT` or `MINUS` operator.
-   - **Relational Algebra**: R − S
-   - **SQL**: `SELECT * FROM R EXCEPT SELECT * FROM S;` (in some SQL dialects, `MINUS` is used instead of `EXCEPT`)
-
-6. **Cartesian Product**: Implemented using the `FROM` clause with multiple tables.
-   - **Relational Algebra**: R × S
-   - **SQL**: `SELECT * FROM R, S;`
-
-7. **Join**: Implemented using various `JOIN` clauses.
-   - **Relational Algebra**: R ⨝_condition S
-   - **SQL**: `SELECT * FROM R JOIN S ON condition;`
-
-8. **Rename**: Not directly available in SQL, but can be simulated using `AS` keyword.
-   - **Relational Algebra**: ρ_new_name(R)
-   - **SQL**: `SELECT * FROM R AS new_name;`
-
-9. **Division**: No direct equivalent in SQL, but can be simulated using nested queries.
-   - **Relational Algebra**: R ÷ S
-   - **SQL**: Can be achieved with subqueries and set operations.
-
-### Example Mappings
-
-#### Selection and Projection
-**Relational Algebra**: π_customer_name(σ_customer_city = 'Oporto'(Customer))
-**SQL**: 
-```sql
-SELECT customer_name 
-FROM Customer 
-WHERE customer_city = 'Oporto';
-```
-
-#### Union
-**Relational Algebra**: π_customer_name(Depositor) ∪ π_customer_name(Borrower)
-**SQL**:
-```sql
-SELECT customer_name 
-FROM Depositor 
-UNION 
-SELECT customer_name 
-FROM Borrower;
-```
-
-#### Intersection
-**Relational Algebra**: π_customer_name(Depositor) ∩ π_customer_name(Borrower)
-**SQL**:
-```sql
-SELECT customer_name 
-FROM Depositor 
-INTERSECT 
-SELECT customer_name 
-FROM Borrower;
-```
-
-#### Difference
-**Relational Algebra**: π_customer_name(Depositor) − π_customer_name(Borrower)
-**SQL**:
-```sql
-SELECT customer_name 
-FROM Depositor 
-EXCEPT 
-SELECT customer_name 
-FROM Borrower;
-```
-
-#### Cartesian Product
-**Relational Algebra**: Customer × Account
-**SQL**:
-```sql
-SELECT * 
-FROM Customer, Account;
-```
-
-### Summary
-
-- **Relational Algebra**: Theoretical foundation for database query languages, providing a set of operations on relations.
-- **SQL**: Practical implementation of relational algebra concepts, with added functionality for real-world database management.
-
-By understanding relational algebra, one gains a deeper understanding of the principles behind SQL and how queries are processed and optimized by the database management system.
-
-
-
-
-
-
-
-
-
-
-
-### Basic Operations of Relational Algebra
-
-1. **Selection (σ)**
-   - **Purpose**: Selects rows that satisfy a given predicate.
-   - **Notation**: σ_condition(R)
-   - **Example**: σ_balance > 1000(Account)
-     - Selects all rows from the Account table where the balance is greater than 1000.
-
-2. **Projection (π)**
-   - **Purpose**: Selects specific columns from a table.
-   - **Notation**: π_column1, column2, ...(R)
-   - **Example**: π_customer_name, customer_city(Customer)
-     - Projects the customer_name and customer_city columns from the Customer table.
-
-3. **Union (∪)**
-   - **Purpose**: Combines the result sets of two relations and removes duplicates.
-   - **Notation**: R ∪ S
-   - **Example**: π_customer_name(Depositor) ∪ π_customer_name(Borrower)
-     - Retrieves a list of all customer names who are either depositors or borrowers.
-
-4. **Intersection (∩)**
-   - **Purpose**: Retrieves the common tuples between two relations.
-   - **Notation**: R ∩ S
-   - **Example**: π_customer_name(Depositor) ∩ π_customer_name(Borrower)
-     - Retrieves a list of customer names who are both depositors and borrowers.
-
-5. **Difference (−)**
-   - **Purpose**: Retrieves the tuples from one relation that are not in another relation.
-   - **Notation**: R − S
-   - **Example**: π_customer_name(Depositor) − π_customer_name(Borrower)
-     - Retrieves a list of customer names who are depositors but not borrowers.
-
-6. **Cartesian Product (×)**
-   - **Purpose**: Combines each tuple of one relation with each tuple of another relation.
-   - **Notation**: R × S
-   - **Example**: Customer × Account
-     - Produces a relation with all possible combinations of rows from the Customer and Account tables.
-
-7. **Rename (ρ)**
-   - **Purpose**: Renames the relation or attributes.
-   - **Notation**: ρ_new_name(R) or ρ_new_name(A1, A2, ...)(R)
-   - **Example**: ρ_CustRenamed(Customer)
-     - Renames the Customer table to CustRenamed.
-
-### Extended Operations of Relational Algebra
-
-1. **Join (⨝)**
-   - **Purpose**: Combines related tuples from two relations based on a common attribute.
-   - **Notation**: R ⨝_condition S
-   - **Example**: Customer ⨝_customer_name = customer_name Depositor
-     - Joins Customer and Depositor tables on customer_name.
-
-2. **Natural Join (⨝)**
-   - **Purpose**: Joins two relations by automatically using all common attributes.
-   - **Notation**: R ⨝ S
-   - **Example**: Customer ⨝ Depositor
-     - Automatically joins Customer and Depositor on the common attribute customer_name.
-
-3. **Theta Join (θ)**
-   - **Purpose**: Joins two relations based on a condition that is not necessarily an equality.
-   - **Notation**: R ⨝_θ S
-   - **Example**: Customer ⨝_Customer.customer_city = Branch.branch_city Branch
-     - Joins Customer and Branch on a condition where customer_city equals branch_city.
-
-4. **Division (÷)**
-   - **Purpose**: Matches tuples from one relation with tuples in another relation.
-   - **Notation**: R ÷ S
-   - **Example**: (π_customer_name, account_number(Depositor) ÷ π_account_number(Account))
-     - Finds customers who have accounts with every account number listed in the Account relation.
-
-### Examples of Relational Algebra Operations
-
-Let's apply some of these operations to the provided database schema.
-
-#### Example 1: Selection and Projection
-Retrieve the names of customers who live in "Oporto".
-```plaintext
-π_customer_name(σ_customer_city = 'Oporto'(Customer))
-```
-
-#### Example 2: Union
-Find the names of all customers who either have an account or have taken a loan.
-```plaintext
-π_customer_name(Depositor) ∪ π_customer_name(Borrower)
-```
-
-#### Example 3: Intersection
-Find the names of customers who both have an account and have taken a loan.
-```plaintext
-π_customer_name(Depositor) ∩ π_customer_name(Borrower)
-```
-
-#### Example 4: Difference
-Find the names of customers who have an account but have not taken a loan.
-```plaintext
-π_customer_name(Depositor) − π_customer_name(Borrower)
-```
-
-#### Example 5: Cartesian Product
-List all combinations of customers and accounts.
-```plaintext
-Customer × Account
-```
-
-#### Example 6: Join
-List the names and balances of customers along with the account number where the balance is more than 500.
-```plaintext
-π_customer_name, account_number, balance(σ_balance > 500 (Customer ⨝ Depositor ⨝ Account))
-```
-
-### Summary
-Relational algebra provides a formal foundation for querying relational databases. The operations allow you to manipulate and retrieve data in various ways, forming the basis for SQL queries in practice. Understanding these operations helps in optimizing and understanding database queries.
-
-
+$$
+\Pi_{\text{name}} (\sigma_{\text{dept}="Physics"} (\text{professor}))
+$$
 
 ## Structured Query Language (SQL)
 
