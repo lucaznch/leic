@@ -7,11 +7,14 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Architecture](#ansisparc-dbms-architecture)
     * [Data Model](#data-models)
     * [Database Design](#database-design)
-2. [SQL](#structured-query-language-sql)
+2. [E-A Model](#e-a-model)
+3. [E-A Conversion](#e-a-relational-conversion)
+4. [Relational Algebra](#relational-algebra)
+5. [SQL](#structured-query-language-sql)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
-3. [E-A](#e-a-model)
-4. [E-A Conversion](#e-a-relational-conversion)
+
+union all, ea-conv->aggreg and specializ
 
 ## Databases and Database Management Systems (DBMS)
 ### Database
@@ -78,10 +81,8 @@ Data models define how data is structured, stored, and manipulated within a DBMS
 1. **Relational Data Model**
     - **Structure**: Data is organized into **tables** (relations) consisting of **rows** (tuples) and **columns** (attributes).
     
-    ```sql
-    user123=> select * from customer;
     customer_name | customer_street | customer_city  
-    --------------+-----------------+----------------
+    --------------|-----------------|----------------
     Adams         | Main Street     | Lisbon
     Brown         | Main Street     | Oporto
     Cook          | Main Street     | Lisbon
@@ -89,16 +90,7 @@ Data models define how data is structured, stored, and manipulated within a DBMS
     Evans         | Forest Street   | Coimbra
     Flores        | Station Street  | Braga
     Gonzalez      | Sunny Street    | Faro
-    Iacocca       | Spring Steet    | Coimbra
-    Johnson       | Red Street      | Cascais
-    King          | Garden Street   | Aveiro
-    Lopez         | Grand Street    | Vila R
-    Martin        | Royal Street    | Braga
-    Nguyen        | School Street   | Castelo Branco
-    Oliver        | 1st Stret       | Oporto
-    Parker        | Hope Street     | Oporto
-    (15 rows)
-    ```
+
 
 2. **Semi-Structured**
     - It represents data in a flexible and hierarchical manner, often allowing for variability in the data structure. This model is particularly well-suited for data that doesn't fit neatly into rows and columns, such as documents, web pages, and various types of unstructured data.<br>
@@ -197,6 +189,582 @@ Data models define how data is structured, stored, and manipulated within a DBMS
 3. **Relational Schema**
 
     The relational schema is the implementation of the conceptual model into a relational database structure. It involves defining tables, columns, primary keys, foreign keys, and constraints.
+
+
+
+## E-A Model
+
+![ea-model](media/ea1.png)
+
+The Entity-Association Model allows us to express the needs of an application domain. By building an E-A Model, we can later determine which tables and columns we need in our database.
+
+With this model we can express:
+
+1. **Entities**
+2. **Weak Entities**
+3. **Entity Attributes**
+4. **Primary Keys**
+5. **Associations** (Relationships)
+6. **Aggregations**
+7. **Generalizations/Specializations**
+
+Sometimes, the model is not enough to represent all the requirements of our application. We can therefore also resort to **Integrity Constraints**, when necessary.
+
+
+1. **Entities**
+    - An **Entity** is a conceptualization of a set of objects (instances, exemplars or individuals) that have common characteristics (attributes) and are uniquely identifiable by a subset of these characteristics.
+    - An **Attribute** is a characteristic of an Entity, representing information to be captured for each instance.
+
+    <br>
+    
+    - An **Entity** must have **at least one** Attribute.
+    - There must be at least one set of **Attributes** that uniquely identifies each instance of the **Entity** (called key Attributes).
+    - Each **Entity** instance can only have one value for each **Attribute**.
+
+    <br>
+
+    - **Candidate key**: a minimal set of attributes that uniquely identifies each instance of an **Entity**.
+    - There may be several (sets of) Attributes that meet the criteria.
+    - The **primary key** is chosen from among them and represented by underlining the attributes that are part of it.
+    - **Criteria**: shorter candidate key (i.e. fewer Attributes), more recognizable by users, more independent, and/or less changeable.
+
+2. **Associations**
+    - An **Association** is a conceptualization of a type of **relationship** between instances of the **Entities** involved in the association that may or may not have descriptive Attributes but cannot have identifying Attributes. (because if they did they would be an entity).
+    - Each instance of an Association is identified by the instances of the Entities it relates.
+
+    <br>
+
+    - An **Association** can have **attributes** but cannot be keys.
+    - The key of an **association** is always composed solely of the **keys of the Entities it relates**.
+    - **Associations** are non-directional
+
+    <br>
+
+    - The most common **associations** are binary or ternary, but there is no theoretical limit to arity
+    - The name of each **association** must be unique to avoid ambiguity (the model is a communication tool)
+    - In lowercase
+    - Usually a verb
+    - Reading direction can be expressed using > or <
+    - The **maximum number of instances of an association** is the product of the number of instances of each **entity** it relates:
+
+    ![ternary-association](media/ea2.png)
+
+3. **Cardinality & Participation**
+    - Functional requirements often **constrain the cardinality and participation** of **Entities** in **Associations**, and it is useful to model these constraints graphically
+
+    ![card-part](media/ea3.png)
+
+    - **Cardinality** (maximum): whether an instance of the Entity can **participate only once, or several times in the Association** 
+    - **Cardinality constraints** refer to the **multiplicity of the relationship**, that is, `one-to-one, one-to-many, or many-to-many`.
+
+    ![cardinality](media/ea11.png)
+
+    - **Participation** (or minimum cardinality): **whether all instances** of the Entity must **participate in the Association**
+    - **Participation restrictions** indicate whether the association is required to exist or not, i.e. total or parcial participation
+
+    ![participation](media/ea12.png)
+
+    - **double line** (without arrow) means **total participation**
+
+    - **one line** (without arrow) means **partial participation**
+
+    - having an **arrow** means **having at most one**
+
+    ![cp1](media/ea4.png)
+
+    ![cp2](media/ea5.png)
+
+    ![cp3](media/ea6.png)
+
+    ![cp4](media/ea7.png)
+
+    ![cp5](media/ea8.png)
+
+    ![cp6](media/ea9.png)
+
+    ![cp7](media/ea10.png)
+
+4. **Generalization/Specialization**
+    - A generalization **groups two or more entities into a single superclass**
+    - A specialization subdivides an entity into one or more subclasses
+    
+    - The **subclasses** of a **specialization inherit**:
+        1. All attributes of the parent class (including the key)
+            - Only its unique attributes are represented at the subclass level
+        3.  All mother class relations
+            - Only relationships exclusive to the subclass are represented at the subclass level
+    
+    - We can, as in associations, apply **restrictions to specializations**:
+        - we can **force specialization**
+        - we can force specialization to be: 
+            1. **Free**: The superclass A may be subclass B, subclass C, both or neither.
+
+            ![free](media/ea13.png)
+
+            2. **Disjoint**: The superclass A may be subclass B, subclass C, **neither**, but never both.
+
+            ![disjoint](media/ea15.png)
+
+            3. **Total**: The superclass A has to be subclass B, subclass C or both.
+
+            ![total](media/ea14.png)
+            
+            4. **Total or Full Disjoint**: The superclass A has to be subclass B or subclass C, but not both.
+
+            ![total-disjoint](media/ea16.png)
+
+5. **Weak Entity**
+    - A **Weak Entity** is an **entity whose key is not unique enough to uniquely identify it**, **depending on a single other Entity for its identification**.
+
+    - Let's consider the following scenario:
+        - A company manufactures **cars** that are identified by model name and year of manufacture
+        - Each car has several **parts** that are **identified by their name and the car they belong**
+        - How to model car parts?
+        - They cannot be entities because they do not have their own key
+        - They cannot be associations because they have a partial key and do not relate the car to anything
+
+    ![weak](media/ea17.png)
+
+   - A **weak entity** is always associated with a **strong entity**. The weak entity relies on this association to be uniquely identified.
+   - A **weak entity has a partial key**, which is an attribute or set of attributes that can uniquely identify instances of the weak entity, but only when combined with the primary key of the strong entity.
+   - A **weak entity cannot exist without the strong entity** it is associated with. The existence of the weak entity is dependent on the existence of the strong entity.
+   - The relationship between a weak entity and a strong entity is known as an identifying relationship. This relationship is usually represented with a double diamond in ER diagrams.
+
+6. **Aggregation**
+    - Abstraction of an **Association that represents it as an Entity**
+    - An **Aggregation** is always **centered on an Association and must only encompass one** association.
+    - An **Aggregation** is only created when it would be **necessary to link an Entity to an Association**: there cannot be Aggregations without Associations linked to them
+    - The **key of an Aggregation** is the same as the **key of the aggregated Association**, i.e. the combination of the keys of the related Entities
+    - An Aggregation cannot have attributes: they must be placed in the aggregated Association
+    - For the purposes of Associations, an **Aggregation counts as any Entity**
+
+
+
+## E-A-Relational Conversion
+
+**Converting an E-A model to a relational model** involves transforming entities, attributes, and relationships defined in the ER diagram into tables (relations) and columns in a relational database
+
+- **Relational Model**
+    - **Database is a collection of relationships**
+    - Each **relation is a set of tuples**, **represented as a table** with columns and rows
+    - **Relational algebra** and relational calculus **to select data**, based on set theory
+    - Independent of any implementation
+    - **Relationship**
+    - **Set of n-ary tuples** that obey a name and data domain specification defined in a header
+    - Normally represented as a **table**
+
+![table](media/ea18.png)
+
+- **Formal Definition**
+    - Given an attribute schema A1… An in which each **Attribute Ai** has a domain of possible values **​​D(Ai)**
+    - A **Relation R is a set**:
+        - `R ⊆ D1 x … x Dn`
+    - Each element **t ∈ R** is an n-tuple:
+    -    `t = 〈v1,..., vn〉 | v1 ∈ D(A1), ..., vn ∈ D(An)`
+
+- **Possible relationships**
+    - `{ }`
+    - `{ ⟨1⟩ }`
+        - one attr, with the value 1
+    - `{ ⟨1⟩, ⟨2⟩ }`
+        - one attr with the values 1, 2
+    - `{ ⟨John, 100⟩, ⟨Bob, 200⟩ }`
+        - two attrs with values ...
+    
+- **Impossible relationships**
+    - `{ ⟨⟩ }`
+        - needs to have at least one attribute
+    - `{ ⟨John⟩, ⟨1000⟩ }`
+        - one attr, but with different types
+    - `{ ⟨John, 100⟩, ⟨Bob⟩ }`
+
+- As we've seen, relationships has unique tuples, that is, has no duplicate tuples or duplicate columns. Likewise, the ordering of both tuples and attributes (columns) is irrelevant.
+
+- In other words, the relationship points(p_name, p_points) is equivalent to product(p_points, p_name).
+
+- These properties are directly reflected if we want to perform the **union** or **conjunction** of two relations:
+
+    1. `{ ⟨John⟩, 100⟩, ⟨Bob, 200⟩ } ∪ { ⟨John⟩, 100⟩ } = { ⟨John⟩, 100⟩, ⟨Bob, 200⟩ }`
+    2. `{ ⟨John⟩, 100⟩, ⟨Bob, 200⟩ } ∩ { ⟨Bob, 25, ⟨John⟩,100⟩ } = { ⟨John⟩, 100⟩ }`
+
+
+- **Properties**
+    - The **name of a relationship must be unique in the database**
+    - The **header** of a relation is a tuple that indicates the name and (data) domain of all attributes
+    - Each **attribute** must have a **unique** name in the relationship
+    - Each **tuple** in the body of a relationship must be **unique** and must contain a value for each attribute, belonging to the domain of that attribute
+    - **The body of a relation is unordered**
+    - **Tuples are unordered**
+
+- **Characteristics**
+    - The degree (or **arity**) of a **relationship** is its **number of attributes** (or *columns*)
+    - The **cardinality** of a relation is its **number of tuples** (or *rows*)
+    - Two relations can share attributes (nominally or conceptually)
+    - **Common attributes are used to connect relationships**
+
+- **Relational Database**
+    - A **relational database is a set of relationships**
+    - A **relational database schema** is the **set of relational schemas (or headers) of all relationships in the database**
+    - **Relational schemas can include integrity constraints**, which restrict the data domain of the relationship
+
+
+
+
+
+- **Integrity Constraints**
+    - **Domain restrictions** (or data type specifications)
+        - Data type indications (string, int, etc.) are often omitted in the relational schema declaration
+        - They are later declared in the SQL implementation
+        - However, domain restrictions that transcend the data type must be declared, e.g.: 
+            - `account(acct_num, balance, branch_name) (balance >= 0)`
+    - **Key** and **uniqueness** restrictions
+        - The primary key is chosen from among the candidates and **represented by underlining the Attributes that are part of it**
+        - The one that optimizes the reference to a tuple; normally only a numeric type attribute
+        - The remaining candidate keys are declared as unique
+
+        ![unique-key](media/ea20.png)
+
+    - **Referential integrity** (or **foreign key**) constraints
+
+        ![fk-relational](media/ea19.png)
+
+
+
+### Conversion
+
+- Entity:
+
+    ![e29](media/ea29.png)
+
+- Association **without cardinality or participation restrictions** (The same also applies to ternary associations)
+    ![e25](media/ea25.png)
+
+    ![e21](media/ea21.png)
+
+- Association with **total participation**
+
+    ![e22](media/ea22.png)
+
+- Association **1-N with partial participation**
+
+    ![e23](media/ea23.png)
+
+- Association **1-1 with partial participation**
+
+    ![e24](media/ea24.png)
+
+- Association **1-N with total participation**
+
+    ![e27](media/ea27.png)
+
+- Association **1-1 with total participation**
+
+    ![e28](media/ea28.png)
+
+
+
+## Relational Algebra
+**Relational algebra** is a procedural language consisting of algebraic operations on relations, the result of which is also a relation.<br>
+
+When we perform a **SQL query** on a database, the DBMS **converts that query into an algebraic expression**.<br>
+
+Includes **unary** (argument is a single relation) and **binary** (argument is two relations) **operations**.<br>
+
+Since the result of each operation is a relation, relational algebra operations can be combined into expressions<br>
+
+A **relational (algebraic) expression** takes one or more relations and returns only one relation.
+
+
+| Name                     | Representation                                    |
+| ------------------------ | ------------------------------------------------- |
+| Empty relation           | $\emptyset$                                       |
+| Relation Literal         | $\{\lang v_1, \dots, v_n\rang, \dots \}$          |
+| Relation Name/_relval_   | $r$                                               |
+| Selection                | $\sigma_c(r)$                                     |
+| Projection               | $\pi_{A_1, \dots, A_n}(r)$                        |
+| Generalized Projection   | $\pi_{F_1, \dots, F_n}(r)$                        |
+| Renaming                 | $\rho_{A_1\mapsto B_1,\dots, A_m \mapsto B_m}(r)$ |
+| Union                    | $r \cup s$                                        |
+| Difference               | $r - s$                                           |
+| Intersection             | $r \cap s$                                        |
+| Cartesian Product        | $r \times s$                                      |
+| Division                 | $r \div s$                                        |
+| Attribution              | $r \leftarrow E$                                  |
+| _Natural Join_           | $\bowtie$                                         |
+| Aggregation              | $_L G_{F}(r)$                                     |
+
+#### Select $\sigma_p(r)$
+- Unary operation that selects tuples from a relation that satisfy a given predicate
+- Similar to `WHERE`
+
+
+:::info[Example]
+
+**Professor relationship**
+
+| `ID` | `name`      | `dept`    | `salary` |
+| ---- | ------------| --------: | -------: |
+| 1    | John        | Chemistry | 65000    |
+| 2    | Jack        | Physics   | 95000    |
+| 3    | Jill        | Physics   | 82000    |
+| 4    | Joan        | Biology   | 82000    |
+
+- **select all professors from the Physics department**
+
+
+    $$
+    \sigma_{\text{dept}="Physics"} (\text{professor})
+    $$
+
+    | `ID` | `name`      | `dept`    | `salary` |
+    | ---- | ------------| --------: | -------: |
+    | 2    | Jack        | Physics   | 95000    |
+    | 3    | Jill        | Physics   | 82000    |
+
+- **Select products with a price equal to or less than 50 cents and stock greater than 5**
+
+    $$
+    \sigma_{\text{dept}="Physics" \land \text{salary} > 90000} (\text{professor})
+    $$
+
+    | `ID` | `name`      | `dept`    | `salary` |
+    | ---- | ------------| --------: | -------: |
+    | 2    | Jack        | Physics   | 95000    |
+
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+### SQL
+
+SQL (Structured Query Language) is a domain-specific language used in programming and managing relational databases. It provides commands to perform operations defined by relational algebra and more. SQL operations that correspond to relational algebra operations include:
+
+1. **Selection**: Implemented using the `WHERE` clause.
+   - **Relational Algebra**: σ_condition(R)
+   - **SQL**: `SELECT * FROM R WHERE condition;`
+
+2. **Projection**: Implemented using the `SELECT` clause with specific columns.
+   - **Relational Algebra**: π_column1, column2, ...(R)
+   - **SQL**: `SELECT column1, column2, ... FROM R;`
+
+3. **Union**: Implemented using the `UNION` operator.
+   - **Relational Algebra**: R ∪ S
+   - **SQL**: `SELECT * FROM R UNION SELECT * FROM S;`
+
+4. **Intersection**: Implemented using the `INTERSECT` operator.
+   - **Relational Algebra**: R ∩ S
+   - **SQL**: `SELECT * FROM R INTERSECT SELECT * FROM S;`
+
+5. **Difference**: Implemented using the `EXCEPT` or `MINUS` operator.
+   - **Relational Algebra**: R − S
+   - **SQL**: `SELECT * FROM R EXCEPT SELECT * FROM S;` (in some SQL dialects, `MINUS` is used instead of `EXCEPT`)
+
+6. **Cartesian Product**: Implemented using the `FROM` clause with multiple tables.
+   - **Relational Algebra**: R × S
+   - **SQL**: `SELECT * FROM R, S;`
+
+7. **Join**: Implemented using various `JOIN` clauses.
+   - **Relational Algebra**: R ⨝_condition S
+   - **SQL**: `SELECT * FROM R JOIN S ON condition;`
+
+8. **Rename**: Not directly available in SQL, but can be simulated using `AS` keyword.
+   - **Relational Algebra**: ρ_new_name(R)
+   - **SQL**: `SELECT * FROM R AS new_name;`
+
+9. **Division**: No direct equivalent in SQL, but can be simulated using nested queries.
+   - **Relational Algebra**: R ÷ S
+   - **SQL**: Can be achieved with subqueries and set operations.
+
+### Example Mappings
+
+#### Selection and Projection
+**Relational Algebra**: π_customer_name(σ_customer_city = 'Oporto'(Customer))
+**SQL**: 
+```sql
+SELECT customer_name 
+FROM Customer 
+WHERE customer_city = 'Oporto';
+```
+
+#### Union
+**Relational Algebra**: π_customer_name(Depositor) ∪ π_customer_name(Borrower)
+**SQL**:
+```sql
+SELECT customer_name 
+FROM Depositor 
+UNION 
+SELECT customer_name 
+FROM Borrower;
+```
+
+#### Intersection
+**Relational Algebra**: π_customer_name(Depositor) ∩ π_customer_name(Borrower)
+**SQL**:
+```sql
+SELECT customer_name 
+FROM Depositor 
+INTERSECT 
+SELECT customer_name 
+FROM Borrower;
+```
+
+#### Difference
+**Relational Algebra**: π_customer_name(Depositor) − π_customer_name(Borrower)
+**SQL**:
+```sql
+SELECT customer_name 
+FROM Depositor 
+EXCEPT 
+SELECT customer_name 
+FROM Borrower;
+```
+
+#### Cartesian Product
+**Relational Algebra**: Customer × Account
+**SQL**:
+```sql
+SELECT * 
+FROM Customer, Account;
+```
+
+### Summary
+
+- **Relational Algebra**: Theoretical foundation for database query languages, providing a set of operations on relations.
+- **SQL**: Practical implementation of relational algebra concepts, with added functionality for real-world database management.
+
+By understanding relational algebra, one gains a deeper understanding of the principles behind SQL and how queries are processed and optimized by the database management system.
+
+
+
+
+
+
+
+
+
+
+
+### Basic Operations of Relational Algebra
+
+1. **Selection (σ)**
+   - **Purpose**: Selects rows that satisfy a given predicate.
+   - **Notation**: σ_condition(R)
+   - **Example**: σ_balance > 1000(Account)
+     - Selects all rows from the Account table where the balance is greater than 1000.
+
+2. **Projection (π)**
+   - **Purpose**: Selects specific columns from a table.
+   - **Notation**: π_column1, column2, ...(R)
+   - **Example**: π_customer_name, customer_city(Customer)
+     - Projects the customer_name and customer_city columns from the Customer table.
+
+3. **Union (∪)**
+   - **Purpose**: Combines the result sets of two relations and removes duplicates.
+   - **Notation**: R ∪ S
+   - **Example**: π_customer_name(Depositor) ∪ π_customer_name(Borrower)
+     - Retrieves a list of all customer names who are either depositors or borrowers.
+
+4. **Intersection (∩)**
+   - **Purpose**: Retrieves the common tuples between two relations.
+   - **Notation**: R ∩ S
+   - **Example**: π_customer_name(Depositor) ∩ π_customer_name(Borrower)
+     - Retrieves a list of customer names who are both depositors and borrowers.
+
+5. **Difference (−)**
+   - **Purpose**: Retrieves the tuples from one relation that are not in another relation.
+   - **Notation**: R − S
+   - **Example**: π_customer_name(Depositor) − π_customer_name(Borrower)
+     - Retrieves a list of customer names who are depositors but not borrowers.
+
+6. **Cartesian Product (×)**
+   - **Purpose**: Combines each tuple of one relation with each tuple of another relation.
+   - **Notation**: R × S
+   - **Example**: Customer × Account
+     - Produces a relation with all possible combinations of rows from the Customer and Account tables.
+
+7. **Rename (ρ)**
+   - **Purpose**: Renames the relation or attributes.
+   - **Notation**: ρ_new_name(R) or ρ_new_name(A1, A2, ...)(R)
+   - **Example**: ρ_CustRenamed(Customer)
+     - Renames the Customer table to CustRenamed.
+
+### Extended Operations of Relational Algebra
+
+1. **Join (⨝)**
+   - **Purpose**: Combines related tuples from two relations based on a common attribute.
+   - **Notation**: R ⨝_condition S
+   - **Example**: Customer ⨝_customer_name = customer_name Depositor
+     - Joins Customer and Depositor tables on customer_name.
+
+2. **Natural Join (⨝)**
+   - **Purpose**: Joins two relations by automatically using all common attributes.
+   - **Notation**: R ⨝ S
+   - **Example**: Customer ⨝ Depositor
+     - Automatically joins Customer and Depositor on the common attribute customer_name.
+
+3. **Theta Join (θ)**
+   - **Purpose**: Joins two relations based on a condition that is not necessarily an equality.
+   - **Notation**: R ⨝_θ S
+   - **Example**: Customer ⨝_Customer.customer_city = Branch.branch_city Branch
+     - Joins Customer and Branch on a condition where customer_city equals branch_city.
+
+4. **Division (÷)**
+   - **Purpose**: Matches tuples from one relation with tuples in another relation.
+   - **Notation**: R ÷ S
+   - **Example**: (π_customer_name, account_number(Depositor) ÷ π_account_number(Account))
+     - Finds customers who have accounts with every account number listed in the Account relation.
+
+### Examples of Relational Algebra Operations
+
+Let's apply some of these operations to the provided database schema.
+
+#### Example 1: Selection and Projection
+Retrieve the names of customers who live in "Oporto".
+```plaintext
+π_customer_name(σ_customer_city = 'Oporto'(Customer))
+```
+
+#### Example 2: Union
+Find the names of all customers who either have an account or have taken a loan.
+```plaintext
+π_customer_name(Depositor) ∪ π_customer_name(Borrower)
+```
+
+#### Example 3: Intersection
+Find the names of customers who both have an account and have taken a loan.
+```plaintext
+π_customer_name(Depositor) ∩ π_customer_name(Borrower)
+```
+
+#### Example 4: Difference
+Find the names of customers who have an account but have not taken a loan.
+```plaintext
+π_customer_name(Depositor) − π_customer_name(Borrower)
+```
+
+#### Example 5: Cartesian Product
+List all combinations of customers and accounts.
+```plaintext
+Customer × Account
+```
+
+#### Example 6: Join
+List the names and balances of customers along with the account number where the balance is more than 500.
+```plaintext
+π_customer_name, account_number, balance(σ_balance > 500 (Customer ⨝ Depositor ⨝ Account))
+```
+
+### Summary
+Relational algebra provides a formal foundation for querying relational databases. The operations allow you to manipulate and retrieve data in various ways, forming the basis for SQL queries in practice. Understanding these operations helps in optimizing and understanding database queries.
 
 
 
@@ -737,272 +1305,3 @@ Consider the following **bank database**, which will be used for the next exampl
 ### SQL in practice (Advanced)
 - [X] TODO!
 
-## E-A Model
-
-![ea-model](media/ea1.png)
-
-The Entity-Association Model allows us to express the needs of an application domain. By building an E-A Model, we can later determine which tables and columns we need in our database.
-
-With this model we can express:
-
-1. **Entities**
-2. **Weak Entities**
-3. **Entity Attributes**
-4. **Primary Keys**
-5. **Associations** (Relationships)
-6. **Aggregations**
-7. **Generalizations/Specializations**
-
-Sometimes, the model is not enough to represent all the requirements of our application. We can therefore also resort to **Integrity Constraints**, when necessary.
-
-
-1. **Entities**
-    - An **Entity** is a conceptualization of a set of objects (instances, exemplars or individuals) that have common characteristics (attributes) and are uniquely identifiable by a subset of these characteristics.
-    - An **Attribute** is a characteristic of an Entity, representing information to be captured for each instance.
-
-    <br>
-    
-    - An **Entity** must have **at least one** Attribute.
-    - There must be at least one set of **Attributes** that uniquely identifies each instance of the **Entity** (called key Attributes).
-    - Each **Entity** instance can only have one value for each **Attribute**.
-
-    <br>
-
-    - **Candidate key**: a minimal set of attributes that uniquely identifies each instance of an **Entity**.
-    - There may be several (sets of) Attributes that meet the criteria.
-    - The **primary key** is chosen from among them and represented by underlining the attributes that are part of it.
-    - **Criteria**: shorter candidate key (i.e. fewer Attributes), more recognizable by users, more independent, and/or less changeable.
-
-2. **Associations**
-    - An **Association** is a conceptualization of a type of **relationship** between instances of the **Entities** involved in the association that may or may not have descriptive Attributes but cannot have identifying Attributes. (because if they did they would be an entity).
-    - Each instance of an Association is identified by the instances of the Entities it relates.
-
-    <br>
-
-    - An **Association** can have **attributes** but cannot be keys.
-    - The key of an **association** is always composed solely of the **keys of the Entities it relates**.
-    - **Associations** are non-directional
-
-    <br>
-
-    - The most common **associations** are binary or ternary, but there is no theoretical limit to arity
-    - The name of each **association** must be unique to avoid ambiguity (the model is a communication tool)
-    - In lowercase
-    - Usually a verb
-    - Reading direction can be expressed using > or <
-    - The **maximum number of instances of an association** is the product of the number of instances of each **entity** it relates:
-
-    ![ternary-association](media/ea2.png)
-
-3. **Cardinality & Participation**
-    - Functional requirements often **constrain the cardinality and participation** of **Entities** in **Associations**, and it is useful to model these constraints graphically
-
-    ![card-part](media/ea3.png)
-
-    - **Cardinality** (maximum): whether an instance of the Entity can **participate only once, or several times in the Association** 
-    - **Cardinality constraints** refer to the **multiplicity of the relationship**, that is, `one-to-one, one-to-many, or many-to-many`.
-
-    ![cardinality](media/ea11.png)
-
-    - **Participation** (or minimum cardinality): **whether all instances** of the Entity must **participate in the Association**
-    - **Participation restrictions** indicate whether the association is required to exist or not
-
-    ![participation](media/ea12.png)
-
-    - **double line** (without arrow) means **total participation**
-
-    - **one line** (without arrow) means **partial participation**
-
-    - having an **arrow** means **having at most one**
-
-    ![cp1](media/ea4.png)
-
-    ![cp2](media/ea5.png)
-
-    ![cp3](media/ea6.png)
-
-    ![cp4](media/ea7.png)
-
-    ![cp5](media/ea8.png)
-
-    ![cp6](media/ea9.png)
-
-    ![cp7](media/ea10.png)
-
-4. **Generalization/Specialization**
-    - A generalization **groups two or more entities into a single superclass**
-    - A specialization subdivides an entity into one or more subclasses
-    
-    - The **subclasses** of a **specialization inherit**:
-        1. All attributes of the parent class (including the key)
-            - Only its unique attributes are represented at the subclass level
-        3.  All mother class relations
-            - Only relationships exclusive to the subclass are represented at the subclass level
-    
-    - We can, as in associations, apply **restrictions to specializations**:
-        - we can **force specialization**
-        - we can force specialization to be: 
-            1. **Free**: The superclass A may be subclass B, subclass C, both or neither.
-
-            ![free](media/ea13.png)
-
-            2. **Disjoint**: The superclass A may be subclass B, subclass C, **neither**, but never both.
-
-            ![disjoint](media/ea15.png)
-
-            3. **Total**: The superclass A has to be subclass B, subclass C or both.
-
-            ![total](media/ea14.png)
-            
-            4. **Total or Full Disjoint**: The superclass A has to be subclass B or subclass C, but not both.
-
-            ![total-disjoint](media/ea16.png)
-
-5. **Weak Entity**
-    - A **Weak Entity** is an **entity whose key is not unique enough to uniquely identify it**, **depending on a single other Entity for its identification**.
-
-    - Let's consider the following scenario:
-        - A company manufactures **cars** that are identified by model name and year of manufacture
-        - Each car has several **parts** that are **identified by their name and the car they belong** to
-        How to model car parts?
-        - They cannot be entities because they do not have their own key
-        - They cannot be associations because they have a partial key and do not relate the car to anything
-
-    ![weak](media/ea17.png)
-
-   - A **weak entity** is always associated with a **strong entity**. The weak entity relies on this association to be uniquely identified.
-   - A **weak entity has a partial key**, which is an attribute or set of attributes that can uniquely identify instances of the weak entity, but only when combined with the primary key of the strong entity.
-   - A **weak entity cannot exist without the strong entity** it is associated with. The existence of the weak entity is dependent on the existence of the strong entity.
-   - The relationship between a weak entity and a strong entity is known as an identifying relationship. This relationship is usually represented with a double diamond in ER diagrams.
-
-6. **Aggregation**
-    - Abstraction of an **Association that represents it as an Entity**
-    - An **Aggregation** is always **centered on an Association and must only encompass one** association.
-    - An **Aggregation** is only created when it would be **necessary to link an Entity to an Association**: there cannot be Aggregations without Associations linked to them
-    - The **key of an Aggregation** is the same as the **key of the aggregated Association**, i.e. the combination of the keys of the related Entities
-    - An Aggregation cannot have attributes: they must be placed in the aggregated Association
-    - For the purposes of Associations, an **Aggregation counts as any Entity**
-
-
-
-## E-A-Relational Conversion
-
-**Converting an E-A model to a relational model** involves transforming entities, attributes, and relationships defined in the ER diagram into tables (relations) and columns in a relational database
-
-- **Relational Model**
-    - **Database is a collection of relationships**
-    - Each **relation is a set of tuples**, **represented as a table** with columns and rows
-    - **Relational algebra** and relational calculus **to select data**, based on set theory
-    - Independent of any implementation
-    - **Relationship**
-    - **Set of n-ary tuples** that obey a name and data domain specification defined in a header
-    - Normally represented as a **table**
-
-![table](media/ea18.png)
-
-- **Formal Definition**
-    - Given an attribute schema A1… An in which each **Attribute Ai** has a domain of possible values **​​D(Ai)**
-    - A **Relation R is a set**:
-        - `R ⊆ D1 x … x Dn`
-    - Each element **t ∈ R** is an n-tuple:
-    -    `t = 〈v1,..., vn〉 | v1 ∈ D(A1), ..., vn ∈ D(An)`
-
-- **Possible relationships**
-    - `{ }`
-    - `{ ⟨1⟩ }`
-        - one attr, with the value 1
-    - `{ ⟨1⟩, ⟨2⟩ }`
-        - one attr with the values 1, 2
-    - `{ ⟨John, 100⟩, ⟨Bob, 200⟩ }`
-        - two attrs with values ...
-    
-- **Impossible relationships**
-    - `{ ⟨⟩ }`
-        - needs to have at least one attribute
-    - `{ ⟨John⟩, ⟨1000⟩ }`
-        - one attr, but with different types
-    - `{ ⟨John, 100⟩, ⟨Bob⟩ }`
-
-- As we've seen, relationships has unique tuples, that is, has no duplicate tuples or duplicate columns. Likewise, the ordering of both tuples and attributes (columns) is irrelevant.
-
-- In other words, the relationship points(p_name, p_points) is equivalent to product(p_points, p_name).
-
-- These properties are directly reflected if we want to perform the **union** or **conjunction** of two relations:
-
-    1. `{ ⟨John⟩, 100⟩, ⟨Bob, 200⟩ } ∪ { ⟨John⟩, 100⟩ } = { ⟨John⟩, 100⟩, ⟨Bob, 200⟩ }`
-    2. `{ ⟨John⟩, 100⟩, ⟨Bob, 200⟩ } ∩ { ⟨Bob, 25, ⟨John⟩,100⟩ } = { ⟨John⟩, 100⟩ }`
-
-
-- **Properties**
-    - The **name of a relationship must be unique in the database**
-    - The **header** of a relation is a tuple that indicates the name and (data) domain of all attributes
-    - Each **attribute** must have a **unique** name in the relationship
-    - Each **tuple** in the body of a relationship must be **unique** and must contain a value for each attribute, belonging to the domain of that attribute
-    - **The body of a relation is unordered**
-    - **Tuples are unordered**
-
-- **Characteristics**
-    - The degree (or **arity**) of a **relationship** is its **number of attributes** (or *columns*)
-    - The **cardinality** of a relation is its **number of tuples** (or *rows*)
-    - Two relations can share attributes (nominally or conceptually)
-    - **Common attributes are used to connect relationships**
-
-- **Relational Database**
-    - A **relational database is a set of relationships**
-    - A **relational database schema** is the **set of relational schemas (or headers) of all relationships in the database**
-    - **Relational schemas can include integrity constraints**, which restrict the data domain of the relationship
-
-
-
-
-
-- **Integrity Constraints**
-    - **Domain restrictions** (or data type specifications)
-        - Data type indications (string, int, etc.) are often omitted in the relational schema declaration
-        - They are later declared in the SQL implementation
-        - However, domain restrictions that transcend the data type must be declared, e.g.: 
-            - `account(acct_num, balance, branch_name) (balance >= 0)`
-    - **Key** and **uniqueness** restrictions
-        - The primary key is chosen from among the candidates and **represented by underlining the Attributes that are part of it**
-        - The one that optimizes the reference to a tuple; normally only a numeric type attribute
-        - The remaining candidate keys are declared as unique
-
-        ![unique-key](media/ea20.png)
-
-    - **Referential integrity** (or **foreign key**) constraints
-
-        ![fk-relational](media/ea19.png)
-
-
-
-### Conversion
-
-- Entity:
-```sql
-Entity1(key1, att1)
-```
-
-- Association **without cardinality or participation restrictions** (The same also applies to ternary associations)
-    ![e25](media/ea25.png)
-
-    ![e21](media/ea21.png)
-
-- Association with **total participation**
-
-    ![e22](media/ea22.png)
-
-- Association **1-N with partial participation**
-
-    ![e23](media/ea23.png)
-
-- Association **1-1 with partial participation**
-
-    ![e24](media/ea24.png)
-
-- Association **1-N with total participation**
-
-    ![e27](media/ea27.png)
-
-- Association **1-1 with total participation**
-
-    ![e28](media/ea28.png)
