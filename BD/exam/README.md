@@ -9,12 +9,18 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Database Design](#database-design)
 2. [E-A Model](#e-a-model)
 3. [E-A Conversion](#e-a-relational-conversion)
+    * [Association Conversion](#conversion)
 4. [Relational Algebra](#relational-algebra)
 5. [SQL](#structured-query-language-sql)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
 
 union all, ea-conv->aggreg and specializ
+
+<br>
+<br>
+<br>
+
 
 ## Databases and Database Management Systems (DBMS)
 ### Database
@@ -40,6 +46,10 @@ A **Database Management System** is a software system that provides an interface
 - **Unacceptable Performance (e.g. for real-time applications)**: For some applications, such as a stock market, data changes so quickly that the performance of the DBMS is not sufficient.
 - **Lack of Flexible Analysis for Certain Data Types**: Mostly for text, where we may want to do advanced searches (e.g. full text search, fuzzy search), something that most DBMSs do not support.
 - **Lack of necessity**: For extremely simple applications or with mostly immutable data, it may not make sense to introduce a DBMS, no matter how small the overhead of doing so may be nowadays. An application of this type would not benefit from a DBMS.
+
+<br>
+<br>
+<br>
 
 ### ANSI/SPARC DBMS Architecture
 Defines a three-level architecture for database systems, designed to separate the user's view of the database from the physical storage of data, enhancing data abstraction, independence, and flexibility.<br>
@@ -75,6 +85,10 @@ Defines a three-level architecture for database systems, designed to separate th
 - **External Level**: A university database might have different views for students, professors, and administrative staff. Students might see their courses and grades, professors might see courses they teach and student performance, and administrative staff might have a broader view including financial data.
 - **Conceptual Level**: The unified schema might include entities like `Student`, `Professor`, `Course`, and `Enrollment`, with relationships and constraints defining how these entities interact.
 - **Internal Level**: The actual data might be stored in various files, with indexes to speed up queries and data distributed across multiple storage devices for performance and reliability.
+
+<br>
+<br>
+<br>
 
 ### Data Models
 Data models define how data is structured, stored, and manipulated within a DBMS, providing a way to represent the logical structure of data, the relationships among data, and the constraints that apply to the data.
@@ -145,6 +159,9 @@ Data models define how data is structured, stored, and manipulated within a DBMS
 6. **Document Data Model**
 7. **...**
 
+<br>
+<br>
+<br>
 
 ### Database Design
 
@@ -190,7 +207,9 @@ Data models define how data is structured, stored, and manipulated within a DBMS
 
     The relational schema is the implementation of the conceptual model into a relational database structure. It involves defining tables, columns, primary keys, foreign keys, and constraints.
 
-
+<br>
+<br>
+<br>
 
 ## E-A Model
 
@@ -338,7 +357,9 @@ Sometimes, the model is not enough to represent all the requirements of our appl
     - An Aggregation cannot have attributes: they must be placed in the aggregated Association
     - For the purposes of Associations, an **Aggregation counts as any Entity**
 
-
+<br>
+<br>
+<br>
 
 ## E-A-Relational Conversion
 
@@ -408,9 +429,6 @@ Sometimes, the model is not enough to represent all the requirements of our appl
     - **Relational schemas can include integrity constraints**, which restrict the data domain of the relationship
 
 
-
-
-
 - **Integrity Constraints**
     - **Domain restrictions** (or data type specifications)
         - Data type indications (string, int, etc.) are often omitted in the relational schema declaration
@@ -427,7 +445,6 @@ Sometimes, the model is not enough to represent all the requirements of our appl
     - **Referential integrity** (or **foreign key**) constraints
 
         ![fk-relational](media/ea19.png)
-
 
 
 ### Conversion
@@ -461,7 +478,9 @@ Sometimes, the model is not enough to represent all the requirements of our appl
 
     ![e28](media/ea28.png)
 
-
+<br>
+<br>
+<br>
 
 ## Relational Algebra
 **Relational algebra** is a procedural language consisting of algebraic operations on relations, the result of which is also a relation.<br>
@@ -521,7 +540,9 @@ $$
 
 
 
-
+<br>
+<br>
+<br>
 
 ### SQL
 
