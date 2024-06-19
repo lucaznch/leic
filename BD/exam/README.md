@@ -11,7 +11,7 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
 3. [E-A](#e-a-model)
-
+4. [E-A Conversion](#e-a-relational-conversion)
 
 ## Databases and Database Management Systems (DBMS)
 ### Database
@@ -735,7 +735,7 @@ Consider the following **bank database**, which will be used for the next exampl
 
 
 ### SQL in practice (Advanced)
-
+- [X] TODO!
 
 ## E-A Model
 
@@ -751,7 +751,7 @@ With this model we can express:
 4. **Primary Keys**
 5. **Associations** (Relationships)
 6. **Aggregations**
-7. **Generalizations**/Specializations
+7. **Generalizations/Specializations**
 
 Sometimes, the model is not enough to represent all the requirements of our application. We can therefore also resort to **Integrity Constraints**, when necessary.
 
@@ -828,3 +828,181 @@ Sometimes, the model is not enough to represent all the requirements of our appl
     ![cp6](media/ea9.png)
 
     ![cp7](media/ea10.png)
+
+4. **Generalization/Specialization**
+    - A generalization **groups two or more entities into a single superclass**
+    - A specialization subdivides an entity into one or more subclasses
+    
+    - The **subclasses** of a **specialization inherit**:
+        1. All attributes of the parent class (including the key)
+            - Only its unique attributes are represented at the subclass level
+        3.  All mother class relations
+            - Only relationships exclusive to the subclass are represented at the subclass level
+    
+    - We can, as in associations, apply **restrictions to specializations**:
+        - we can **force specialization**
+        - we can force specialization to be: 
+            1. **Free**: The superclass A may be subclass B, subclass C, both or neither.
+
+            ![free](media/ea13.png)
+
+            2. **Disjoint**: The superclass A may be subclass B, subclass C, **neither**, but never both.
+
+            ![disjoint](media/ea15.png)
+
+            3. **Total**: The superclass A has to be subclass B, subclass C or both.
+
+            ![total](media/ea14.png)
+            
+            4. **Total or Full Disjoint**: The superclass A has to be subclass B or subclass C, but not both.
+
+            ![total-disjoint](media/ea16.png)
+
+5. **Weak Entity**
+    - A **Weak Entity** is an **entity whose key is not unique enough to uniquely identify it**, **depending on a single other Entity for its identification**.
+
+    - Let's consider the following scenario:
+        - A company manufactures **cars** that are identified by model name and year of manufacture
+        - Each car has several **parts** that are **identified by their name and the car they belong** to
+        How to model car parts?
+        - They cannot be entities because they do not have their own key
+        - They cannot be associations because they have a partial key and do not relate the car to anything
+
+    ![weak](media/ea17.png)
+
+   - A **weak entity** is always associated with a **strong entity**. The weak entity relies on this association to be uniquely identified.
+   - A **weak entity has a partial key**, which is an attribute or set of attributes that can uniquely identify instances of the weak entity, but only when combined with the primary key of the strong entity.
+   - A **weak entity cannot exist without the strong entity** it is associated with. The existence of the weak entity is dependent on the existence of the strong entity.
+   - The relationship between a weak entity and a strong entity is known as an identifying relationship. This relationship is usually represented with a double diamond in ER diagrams.
+
+6. **Aggregation**
+    - Abstraction of an **Association that represents it as an Entity**
+    - An **Aggregation** is always **centered on an Association and must only encompass one** association.
+    - An **Aggregation** is only created when it would be **necessary to link an Entity to an Association**: there cannot be Aggregations without Associations linked to them
+    - The **key of an Aggregation** is the same as the **key of the aggregated Association**, i.e. the combination of the keys of the related Entities
+    - An Aggregation cannot have attributes: they must be placed in the aggregated Association
+    - For the purposes of Associations, an **Aggregation counts as any Entity**
+
+
+
+## E-A-Relational Conversion
+
+**Converting an E-A model to a relational model** involves transforming entities, attributes, and relationships defined in the ER diagram into tables (relations) and columns in a relational database
+
+- **Relational Model**
+    - **Database is a collection of relationships**
+    - Each **relation is a set of tuples**, **represented as a table** with columns and rows
+    - **Relational algebra** and relational calculus **to select data**, based on set theory
+    - Independent of any implementation
+    - **Relationship**
+    - **Set of n-ary tuples** that obey a name and data domain specification defined in a header
+    - Normally represented as a **table**
+
+![table](media/ea18.png)
+
+- **Formal Definition**
+    - Given an attribute schema A1… An in which each **Attribute Ai** has a domain of possible values **​​D(Ai)**
+    - A **Relation R is a set**:
+        - `R ⊆ D1 x … x Dn`
+    - Each element **t ∈ R** is an n-tuple:
+    -    `t = 〈v1,..., vn〉 | v1 ∈ D(A1), ..., vn ∈ D(An)`
+
+- **Possible relationships**
+    - `{ }`
+    - `{ ⟨1⟩ }`
+        - one attr, with the value 1
+    - `{ ⟨1⟩, ⟨2⟩ }`
+        - one attr with the values 1, 2
+    - `{ ⟨John, 100⟩, ⟨Bob, 200⟩ }`
+        - two attrs with values ...
+    
+- **Impossible relationships**
+    - `{ ⟨⟩ }`
+        - needs to have at least one attribute
+    - `{ ⟨John⟩, ⟨1000⟩ }`
+        - one attr, but with different types
+    - `{ ⟨John, 100⟩, ⟨Bob⟩ }`
+
+- As we've seen, relationships has unique tuples, that is, has no duplicate tuples or duplicate columns. Likewise, the ordering of both tuples and attributes (columns) is irrelevant.
+
+- In other words, the relationship points(p_name, p_points) is equivalent to product(p_points, p_name).
+
+- These properties are directly reflected if we want to perform the **union** or **conjunction** of two relations:
+
+    1. `{ ⟨John⟩, 100⟩, ⟨Bob, 200⟩ } ∪ { ⟨John⟩, 100⟩ } = { ⟨John⟩, 100⟩, ⟨Bob, 200⟩ }`
+    2. `{ ⟨John⟩, 100⟩, ⟨Bob, 200⟩ } ∩ { ⟨Bob, 25, ⟨John⟩,100⟩ } = { ⟨John⟩, 100⟩ }`
+
+
+- **Properties**
+    - The **name of a relationship must be unique in the database**
+    - The **header** of a relation is a tuple that indicates the name and (data) domain of all attributes
+    - Each **attribute** must have a **unique** name in the relationship
+    - Each **tuple** in the body of a relationship must be **unique** and must contain a value for each attribute, belonging to the domain of that attribute
+    - **The body of a relation is unordered**
+    - **Tuples are unordered**
+
+- **Characteristics**
+    - The degree (or **arity**) of a **relationship** is its **number of attributes** (or *columns*)
+    - The **cardinality** of a relation is its **number of tuples** (or *rows*)
+    - Two relations can share attributes (nominally or conceptually)
+    - **Common attributes are used to connect relationships**
+
+- **Relational Database**
+    - A **relational database is a set of relationships**
+    - A **relational database schema** is the **set of relational schemas (or headers) of all relationships in the database**
+    - **Relational schemas can include integrity constraints**, which restrict the data domain of the relationship
+
+
+
+
+
+- **Integrity Constraints**
+    - **Domain restrictions** (or data type specifications)
+        - Data type indications (string, int, etc.) are often omitted in the relational schema declaration
+        - They are later declared in the SQL implementation
+        - However, domain restrictions that transcend the data type must be declared, e.g.: 
+            - `account(acct_num, balance, branch_name) (balance >= 0)`
+    - **Key** and **uniqueness** restrictions
+        - The primary key is chosen from among the candidates and **represented by underlining the Attributes that are part of it**
+        - The one that optimizes the reference to a tuple; normally only a numeric type attribute
+        - The remaining candidate keys are declared as unique
+
+        ![unique-key](media/ea20.png)
+
+    - **Referential integrity** (or **foreign key**) constraints
+
+        ![fk-relational](media/ea19.png)
+
+
+
+### Conversion
+
+- Entity:
+```sql
+Entity1(key1, att1)
+```
+
+- Association **without cardinality or participation restrictions** (The same also applies to ternary associations)
+    ![e25](media/ea25.png)
+
+    ![e21](media/ea21.png)
+
+- Association with **total participation**
+
+    ![e22](media/ea22.png)
+
+- Association **1-N with partial participation**
+
+    ![e23](media/ea23.png)
+
+- Association **1-1 with partial participation**
+
+    ![e24](media/ea24.png)
+
+- Association **1-N with total participation**
+
+    ![e27](media/ea27.png)
+
+- Association **1-1 with total participation**
+
+    ![e28](media/ea28.png)
