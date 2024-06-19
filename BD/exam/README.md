@@ -15,7 +15,6 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
 
-union all, ea-conv->aggreg and specializ
 
 <br>
 <br>
@@ -483,13 +482,13 @@ Sometimes, the model is not enough to represent all the requirements of our appl
 <br>
 
 ## Relational Algebra
-**Relational algebra** is a procedural language consisting of algebraic operations on relations, the result of which is also a relation.<br>
+**Relational algebra** is a procedural language consisting of **algebraic operations on relations**, the result of which is also a relation.<br>
 
 When we perform a **SQL query** on a database, the DBMS **converts that query into an algebraic expression**.<br>
 
 Includes **unary** (argument is a single relation) and **binary** (argument is two relations) **operations**.<br>
 
-Since the result of each operation is a relation, relational algebra operations can be combined into expressions<br>
+Since the result of each operation is a relation, relational algebra operations can be combined into **expressions**<br>
 
 A **relational (algebraic) expression** takes one or more relations and returns only one relation.
 
@@ -497,8 +496,10 @@ A **relational (algebraic) expression** takes one or more relations and returns 
 #### Select $\sigma_p(r)$
 - Unary operation that selects tuples from a relation that satisfy a given predicate
 - Similar to `WHERE`
+- Comparison operators are allowed: `=, ≠, >, ≥, <, ≤`
+- Predicates can be composed using the logical operators: `∧, ∨, ¬`
 
-Consider the following **Professor relationship**
+Consider the following **professor** relationship
 
 | `ID` | `name`      | `dept`    | `salary` |
 | ---- | ------------| --------: | -------: |
@@ -508,8 +509,9 @@ Consider the following **Professor relationship**
 | 4    | Joan        | Biology   | 82000    |
 
 <br>
+<br>
 
-**select all professors from the Physics department**
+**1. select all professors from the Physics department**
 
 $$
 \sigma_{\text{dept}="Physics"} (\text{professor})
@@ -520,7 +522,7 @@ $$
 | 2    | Jack        | Physics   | 95000    |
 | 3    | Jill        | Physics   | 82000    |
 
-**Select products with a price equal to or less than 50 cents and stock greater than 5**
+**2. Select products with a price equal to or less than 50 cents and stock greater than 5**
 
 $$
 \sigma_{\text{dept}="Physics" \land \text{salary} > 90000} (\text{professor})
