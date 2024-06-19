@@ -496,7 +496,8 @@ A **relational (algebraic) expression** takes one or more relations and returns 
 
 
 #### Select
-**Select $\sigma_p(r)$**
+$\sigma_p(r)$
+
 - **Unary operation** that **selects tuples from a relation** that satisfy a given **predicate**
     - where **p** is the selection **predicate** over the **r relation**
 - Similar to `WHERE`
@@ -540,7 +541,9 @@ $$
 <br>
 
 ### Project
-**Project $ \Pi_{\text{A1,...,Ak}} (\text{r}) $**
+$\Pi_{\text{A1,...,Ak}} (\text{r})$
+
+
 - **Unary operation** that **returns a projection** of the argument relation into a lower dimensional space, i.e., with only the listed attributes
     - where each **Ai is an attribute name** of the **relation r**
 - similar to `SELECT`
