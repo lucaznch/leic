@@ -10,6 +10,7 @@ This summary was made as a way to study for my exam, and definitely not to use i
 2. [SQL](#structured-query-language-sql)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
+3. [E-A](#e-a-model)
 
 
 ## Databases and Database Management Systems (DBMS)
@@ -444,6 +445,7 @@ Consider the following **bank database**, which will be used for the next exampl
 
 - `SELECT`
     - a query refers to a request for data from a database, and `SELECT` Queries are the most common type used for data retrieval.
+    - The result of a `SELECT` is **always** a table
 
     ```sql
     [WITH with_query [, ...]]
@@ -458,6 +460,42 @@ Consider the following **bank database**, which will be used for the next exampl
     [NULLS { FIRST | LAST}] [, ...]]
     [LIMIT {count | ALL}]
     ```
+
+- **Cartesian product** with `SELECT`
+
+    ```sql
+    SELECT * FROM account, depositor;
+    ```
+
+    account_number | branch_name | balance  | customer_name | account_number 
+    ----------------|-------------|----------|---------------|----------------
+    A-101          | Downtown    | 500.0000 | Cook          | A-102
+    A-102          | Uptown      | 700.0000 | Cook          | A-102
+    A-201          | Uptown      | 900.0000 | Cook          | A-102
+    A-215          | Metro       | 600.0000 | Cook          | A-102
+    A-217          | University  | 650.0000 | Cook          | A-102
+    A-222          | Central     | 550.0000 | Cook          | A-102
+    A-305          | Round Hill  | 800.0000 | Cook          | A-102
+    A-333          | Central     | 750.0000 | Cook          | A-102
+    A-444          | Downtown    | 850.0000 | Cook          | A-102
+    A-101          | Downtown    | 500.0000 | Johnson       | A-101
+    A-102          | Uptown      | 700.0000 | Johnson       | A-101
+    A-201          | Uptown      | 900.0000 | Johnson       | A-101
+    A-215          | Metro       | 600.0000 | Johnson       | A-101
+    A-217          | University  | 650.0000 | Johnson       | A-101
+    A-222          | Central     | 550.0000 | Johnson       | A-101
+    A-305          | Round Hill  | 800.0000 | Johnson       | A-101
+    A-333          | Central     | 750.0000 | Johnson       | A-101
+    A-444          | Downtown    | 850.0000 | Johnson       | A-101
+    ...            | ...         | ...      | ...           | ...
+
+    - **account** has 9 lines
+    - **depositor** has 10 lines
+    - **account × depositor** has 9x19 = 90 lines!
+    - **account** has 3 columns
+    - **customer** has 2 columns
+    - **account × depositor** has 3+2 = 5 columns!
+    - **Cartesian product** allows data to be crossed between tables, but requires filters that interconnect the tables
 
 - **Subquery**
     - Subqueries can impact performance, especially if not optimized. Consider alternative approaches like **joins** or **common table expressions** (CTEs) for complex scenarios.
@@ -506,8 +544,11 @@ Consider the following **bank database**, which will be used for the next exampl
 
 
 - `ORDER BY`
-    - **ORDER BY** is a clause in SQL used to sort the result set of a query based on one or more columns. 
-    
+    - **ORDER BY** is a clause in SQL used to sort the result set of a query based on one or more columns.
+    - **Default** in ascending order (`ASC`)
+    - Specify descending order (`DESC`)
+    - Without `ORDER BY`, results come in “arbitrary” order
+
     1. List Branches Ordered by Assets in Descending Order
 
         ```sql
@@ -534,7 +575,16 @@ Consider the following **bank database**, which will be used for the next exampl
 - `JOIN`
     - used to combine rows from two or more tables based on a related column between them.
 
-    1. `LEFT JOIN`
+    1. `INNER JOIN` / `JOIN`
+        - Selects rows with common values ​​in both tables.
+
+        ```sql
+        SELECT amount FROM loan l
+        JOIN borrower b ON l.loan_number = b.loan_number;
+        ```
+
+    2. `LEFT OUTER JOIN` / `LEFT JOIN`
+        - Selects all rows from the left table and the corresponding values, if any, from the right table.
 
         ```sql
         -- List all customers and their account balances (if any)
@@ -566,7 +616,41 @@ Consider the following **bank database**, which will be used for the next exampl
         | Martin   |         |
         | Gonzalez |         |
 
-    2. `NATURAL JOIN`
+    3. `RIGHT OUTER JOIN` / `RIGHT JOIN`
+
+        - Selects all rows from the right table and the corresponding values, if any, from the left table.
+
+    4. `FULL OUTER JOIN` / `FULL JOIN`
+        - Selects all rows from both tables, matching values ​​if they exist.
+        - creates the result-set by combining results of both **LEFT JOIN** and **RIGHT JOIN**. The result-set will contain all the rows from both tables. 
+
+        ```sql
+        SELECT c.customer_name, b.loan_number FROM customer c FULL JOIN borrower b ON c.customer_name = b.customer_name;
+        ```
+
+        | customer_name | loan_number |
+        |---------------|-------------|
+        | Brown         | L-11        |
+        | Nguyen        | L-14        |
+        | Cook          | L-15        |
+        | Iacocca       | L-16        |
+        | Gonzalez      | L-17        |
+        | Iacocca       | L-17        |
+        | Parker        | L-20        |
+        | Brown         | L-21        |
+        | Brown         | L-23        |
+        | Davis         | L-93        |
+        | Johnson       |             |
+        | Lopez         |             |
+        | Evans         |             |
+        | Adams         |             |
+        | Flores        |             |
+        | King          |             |
+        | Oliver        |             |
+        | Martin        |             |
+
+
+    5. `NATURAL JOIN`
         - Type of join that automatically joins tables based on columns with the same name and data types.
         - Be careful when using it, as it may behave unexpectedly. `NATURAL JOIN` performs a join on all columns with the same name, so if we have two columns with the same name but not related, we will obtain incorrect data.
 
@@ -652,3 +736,95 @@ Consider the following **bank database**, which will be used for the next exampl
 
 ### SQL in practice (Advanced)
 
+
+## E-A Model
+
+![ea-model](media/ea1.png)
+
+The Entity-Association Model allows us to express the needs of an application domain. By building an E-A Model, we can later determine which tables and columns we need in our database.
+
+With this model we can express:
+
+1. **Entities**
+2. **Weak Entities**
+3. **Entity Attributes**
+4. **Primary Keys**
+5. **Associations** (Relationships)
+6. **Aggregations**
+7. **Generalizations**/Specializations
+
+Sometimes, the model is not enough to represent all the requirements of our application. We can therefore also resort to **Integrity Constraints**, when necessary.
+
+
+1. **Entities**
+    - An **Entity** is a conceptualization of a set of objects (instances, exemplars or individuals) that have common characteristics (attributes) and are uniquely identifiable by a subset of these characteristics.
+    - An **Attribute** is a characteristic of an Entity, representing information to be captured for each instance.
+
+    <br>
+    
+    - An **Entity** must have **at least one** Attribute.
+    - There must be at least one set of **Attributes** that uniquely identifies each instance of the **Entity** (called key Attributes).
+    - Each **Entity** instance can only have one value for each **Attribute**.
+
+    <br>
+
+    - **Candidate key**: a minimal set of attributes that uniquely identifies each instance of an **Entity**.
+    - There may be several (sets of) Attributes that meet the criteria.
+    - The **primary key** is chosen from among them and represented by underlining the attributes that are part of it.
+    - **Criteria**: shorter candidate key (i.e. fewer Attributes), more recognizable by users, more independent, and/or less changeable.
+
+2. **Associations**
+    - An **Association** is a conceptualization of a type of **relationship** between instances of the **Entities** involved in the association that may or may not have descriptive Attributes but cannot have identifying Attributes. (because if they did they would be an entity).
+    - Each instance of an Association is identified by the instances of the Entities it relates.
+
+    <br>
+
+    - An **Association** can have **attributes** but cannot be keys.
+    - The key of an **association** is always composed solely of the **keys of the Entities it relates**.
+    - **Associations** are non-directional
+
+    <br>
+
+    - The most common **associations** are binary or ternary, but there is no theoretical limit to arity
+    - The name of each **association** must be unique to avoid ambiguity (the model is a communication tool)
+    - In lowercase
+    - Usually a verb
+    - Reading direction can be expressed using > or <
+    - The **maximum number of instances of an association** is the product of the number of instances of each **entity** it relates:
+
+    ![ternary-association](media/ea2.png)
+
+3. **Cardinality & Participation**
+    - Functional requirements often **constrain the cardinality and participation** of **Entities** in **Associations**, and it is useful to model these constraints graphically
+
+    ![card-part](media/ea3.png)
+
+    - **Cardinality** (maximum): whether an instance of the Entity can **participate only once, or several times in the Association** 
+    - **Cardinality constraints** refer to the **multiplicity of the relationship**, that is, `one-to-one, one-to-many, or many-to-many`.
+
+    ![cardinality](media/ea11.png)
+
+    - **Participation** (or minimum cardinality): **whether all instances** of the Entity must **participate in the Association**
+    - **Participation restrictions** indicate whether the association is required to exist or not
+
+    ![participation](media/ea12.png)
+
+    - **double line** (without arrow) means **total participation**
+
+    - **one line** (without arrow) means **partial participation**
+
+    - having an **arrow** means **having at most one**
+
+    ![cp1](media/ea4.png)
+
+    ![cp2](media/ea5.png)
+
+    ![cp3](media/ea6.png)
+
+    ![cp4](media/ea7.png)
+
+    ![cp5](media/ea8.png)
+
+    ![cp6](media/ea9.png)
+
+    ![cp7](media/ea10.png)
