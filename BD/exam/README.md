@@ -1715,7 +1715,6 @@ Consider the following **bank database**, which will be used for the next exampl
         END
     $$
     LANGUAGE plpgsql;
-
     ```
 
     - Note that it is possible to **return the output in the arguments**.
@@ -1801,146 +1800,146 @@ Consider the following **bank database**, which will be used for the next exampl
     LANGUAGE sql;
     ```
 
-    <br>
-    <br>
+<br>
+<br>
 
-    - **Procedures**
+- **Procedures**
 
-        ```sql
-        CREATE PROCEDURE clear_accounts()
-        AS
-        $$
-            DELETE FROM account
-            WHERE balance = 0;
-        $$
-        LANGUAGE sql;
+    ```sql
+    CREATE PROCEDURE clear_accounts()
+    AS
+    $$
+        DELETE FROM account
+        WHERE balance = 0;
+    $$
+    LANGUAGE sql;
 
-        -- Usage
-        CALL clear_accounts;
-        ```
+    -- Usage
+    CALL clear_accounts;
+    ```
 
-    <br>
-    <br>
+<br>
+<br>
 
-    | Category    | Input    | Output    | Invocation | Data Manipulation |
-    |-------------|----------|-----------|------------|-------------------|
-    | `FUNCTION`  | Optional | Mandatory | `SELECT`   | Yes               |
-    | `PROCEDURE` | Optional | Optional* | `CALL`     | Yes               |
+| Category    | Input    | Output    | Invocation | Data Manipulation |
+|-------------|----------|-----------|------------|-------------------|
+| `FUNCTION`  | Optional | Mandatory | `SELECT`   | Yes               |
+| `PROCEDURE` | Optional | Optional* | `CALL`     | Yes               |
 
-    > To call a `PROCEDURE` with outputs it is necessary to create a variable per output argument (with \set in PostgreSQL) and pass it as an argument when `CALL`ing the `PROCEDURE`. The output value will be stored in the variable.
+> To call a `PROCEDURE` with outputs it is necessary to create a variable per output argument (with \set in PostgreSQL) and pass it as an argument when `CALL`ing the `PROCEDURE`. The output value will be stored in the variable.
 
-    <br>
-    <br>
+<br>
+<br>
 
-    - **PSM Syntax**
+- **PSM Syntax**
 
-        - `BEGIN`...`END` **blocks**
-            - Can contain multiple SQL commands
-            - May contain local variable declarations
-        - **Variable declaration**
-            - `DECLARE` <variable> <type> [`DEFAULT` <value>]
-            - The scope of the local variable is restricted to the block where it was declared
+    - `BEGIN`...`END` **blocks**
+        - Can contain multiple SQL commands
+        - May contain local variable declarations
+    - **Variable declaration**
+        - `DECLARE` <variable> <type> [`DEFAULT` <value>]
+        - The scope of the local variable is restricted to the block where it was declared
 
-        - **Cursors**
-            - **Mechanism for reading a table line by line**, analogous to iterators in other programming languages
-                - **Declaration**: `DECLARE` cursor_name `CURSOR FOR SELECT` … `FROM` …
-                - **Opening**: `OPEN` cursor_name
-                - **Iteration**: `FETCH` cursor_name `INTO` …
-                - **Closing**: `CLOSE` cursor_name
+    - **Cursors**
+        - **Mechanism for reading a table line by line**, analogous to iterators in other programming languages
+            - **Declaration**: `DECLARE` cursor_name `CURSOR FOR SELECT` … `FROM` …
+            - **Opening**: `OPEN` cursor_name
+            - **Iteration**: `FETCH` cursor_name `INTO` …
+            - **Closing**: `CLOSE` cursor_name
 
 
-        ```sql
-        -- cursor use example to calculate an AVG
+    ```sql
+    -- cursor use example to calculate an AVG
 
-        CREATE OR REPLACE FUNCTION average_balance(OUT avg_balance REAL) AS
-        $$
-            DECLARE
-                cursor_account CURSOR FOR SELECT balance FROM account;
-                balance REAL; sum_balance REAL := 0.0; count_balance INTEGER := 0;
-            BEGIN
-                OPEN cursor_account;
-                LOOP
-                    FETCH cursor_account INTO balance;
-                    IF NOT FOUND THEN EXIT;
-                    END IF;
-                    sum_balance = sum_balance + balance;
-                    count_balance = count_balance + 1;
-                END LOOP;
-                CLOSE cursor_account;
-                avg_balance = sum_balance / count_balance;
-            END
-        $$ LANGUAGE plpgsql;
-        ```
-
-    <br>
-    <br>
-    
-    - **Triggers**
-        - **An instruction executed in reaction to a modification in the DB**
-            - Allows you to implement more sophisticated integrity restrictions as well as procedures that “resolve” problems in the state of the DB
-        - To specify a trigger it is necessary to define:
-            - The **conditions under which the trigger is fired**
-            - The **actions to be taken when the trigger is executed**
-                - Typically, call a TRIGGER FUNCTION (i.e. a function without input and with return type TRIGGER) that performs the actions
-
-        - **CREATE TRIGGER** name **{AFTER | BEFORE | INSTEAF OF} {INSERT | UPDATE | DELETE | TRUNCATE} ON** table **FOR EACH {ROW | STATEMENT} EXECUTE FUNCTION**
-
-        <br>
-        <br>
-
-        - Scenario: A customer tries to withdraw an amount greater than their balance
-        - Option 1: Cancel the operation
-
-        ```sql
-        -- option 1
-
-        CREATE OR REPLACE FUNCTION cancel_overdraft_func() RETURNS TRIGGER AS
-        $$
+    CREATE OR REPLACE FUNCTION average_balance(OUT avg_balance REAL) AS
+    $$
+        DECLARE
+            cursor_account CURSOR FOR SELECT balance FROM account;
+            balance REAL; sum_balance REAL := 0.0; count_balance INTEGER := 0;
         BEGIN
-            IF NEW.balance < 0 THEN
-                RAISE EXCEPTION 'A conta % tem saldo insuficiente.',
-                NEW.account_number;
-            END IF;
-            RETURN NEW;
+            OPEN cursor_account;
+            LOOP
+                FETCH cursor_account INTO balance;
+                IF NOT FOUND THEN EXIT;
+                END IF;
+                sum_balance = sum_balance + balance;
+                count_balance = count_balance + 1;
+            END LOOP;
+            CLOSE cursor_account;
+            avg_balance = sum_balance / count_balance;
         END
-        $$ LANGUAGE plpgsql;
+    $$ LANGUAGE plpgsql;
+    ```
+
+<br>
+<br>
+
+- **Triggers**
+    - **An instruction executed in reaction to a modification in the DB**
+        - Allows you to implement more sophisticated integrity restrictions as well as procedures that “resolve” problems in the state of the DB
+    - To specify a trigger it is necessary to define:
+        - The **conditions under which the trigger is fired**
+        - The **actions to be taken when the trigger is executed**
+            - Typically, call a TRIGGER FUNCTION (i.e. a function without input and with return type TRIGGER) that performs the actions
+
+    - **CREATE TRIGGER** name **{AFTER | BEFORE | INSTEAF OF} {INSERT | UPDATE | DELETE | TRUNCATE} ON** table **FOR EACH {ROW | STATEMENT} EXECUTE FUNCTION**
+
+    <br>
+    <br>
+
+    - Scenario: A customer tries to withdraw an amount greater than their balance
+    - Option 1: Cancel the operation
+
+    ```sql
+    -- option 1
+
+    CREATE OR REPLACE FUNCTION cancel_overdraft_func() RETURNS TRIGGER AS
+    $$
+    BEGIN
+        IF NEW.balance < 0 THEN
+            RAISE EXCEPTION 'A conta % tem saldo insuficiente.',
+            NEW.account_number;
+        END IF;
+        RETURN NEW;
+    END
+    $$ LANGUAGE plpgsql;
 
 
-        CREATE TRIGGER cancel_overdraft
-        AFTER UPDATE ON account 
-        FOR EACH ROW EXECUTE FUNCTION cancel_overdraft_func();
+    CREATE TRIGGER cancel_overdraft
+    AFTER UPDATE ON account 
+    FOR EACH ROW EXECUTE FUNCTION cancel_overdraft_func();
 
 
-        -- testing the trigger
-        UPDATE account SET balance = balance-500 WHERE account_number = 'A-102';
-        ERROR: A conta A-102 tem saldo insuficiente.
-        CONTEXT: PL/pgSQL function cancel_overdraft_func() line 4 at RAISE
-        ```
+    -- testing the trigger
+    UPDATE account SET balance = balance-500 WHERE account_number = 'A-102';
+    ERROR: A conta A-102 tem saldo insuficiente.
+    CONTEXT: PL/pgSQL function cancel_overdraft_func() line 4 at RAISE
+    ```
 
-        - Option 2:
-            - Create a loan equal to the missing amount with the same number as the account
-            - Reset the account balance to zero
+    - Option 2:
+        - Create a loan equal to the missing amount with the same number as the account
+        - Reset the account balance to zero
 
-        ```sql
-        -- option 2
+    ```sql
+    -- option 2
 
-        CREATE OR REPLACE FUNCTION overdraft_loan_func() RETURNS TRIGGER AS
-        $$
-        BEGIN
-            IF NEW.balance < 0 THEN
-                INSERT INTO loan VALUES (
-                    NEW.account_number, NEW.branch_name, (-1)*NEW.balance);
-                INSERT INTO borrower (
-                    SELECT customer_name, account_number FROM depositor
-                    WHERE depositor.account_number = new.account_number
-                );
-                UPDATE account SET balance = 0
-                WHERE account.account_number = NEW.account_number;
-            END IF;
-            RETURN NEW;
-        END
-        $$ LANGUAGE plpgsql;
-        ```
+    CREATE OR REPLACE FUNCTION overdraft_loan_func() RETURNS TRIGGER AS
+    $$
+    BEGIN
+        IF NEW.balance < 0 THEN
+            INSERT INTO loan VALUES (
+                NEW.account_number, NEW.branch_name, (-1)*NEW.balance);
+            INSERT INTO borrower (
+                SELECT customer_name, account_number FROM depositor
+                WHERE depositor.account_number = new.account_number
+            );
+            UPDATE account SET balance = 0
+            WHERE account.account_number = NEW.account_number;
+        END IF;
+        RETURN NEW;
+    END
+    $$ LANGUAGE plpgsql;
+    ```
 
 <br>
 <br>
@@ -2000,6 +1999,26 @@ Consider the following **bank database**, which will be used for the next exampl
     - It is no longer possible to continue the transaction
 - We can use SAVEPOINT to save a safe point and ROLLBACK TO to return to that point
     - It is the only way to recover from the abort state without doing full ROLLBACK
+
+
+
+#### Isolation Levels
+
+To manage the isolation of transactions, SQL databases offer different isolation levels, which define the degree to which the operations in one transaction are isolated from those in other transactions. The standard isolation levels are:
+
+1. **READ UNCOMMITTED**:
+   - Transactions can read data modified by other transactions but not yet committed. This isolation level allows dirty reads.
+
+2. **READ COMMITTED**:
+   - A transaction can only read data that has been committed by other transactions. This prevents dirty reads.
+
+3. **REPEATABLE READ**:
+   - Ensures that if a transaction reads a row, it will read the same row again if it repeats the read later in the same transaction. This prevents non-repeatable reads.
+
+4. **SERIALIZABLE**:
+   - The highest isolation level, ensuring complete isolation from other transactions. It guarantees that the outcome of executing transactions concurrently is the same as if they were executed serially.
+
+
 
 
 ### Views
@@ -2106,8 +2125,57 @@ However, we must understand the architecture of these applications. In particula
 - **Making use of transactions**
 
 
+Users of information systems that contain databases **do not normally access the database directly**.<br>
+
+In many cases, **access to the database is done through a web application**, in which the **user interacts with the database through the web browser**
+- The web application can only be accessible on the intranet
 
 
+![http-request-methods](media/http-reqs.png)
+
+<br>
+
+- **HTTP Request Methods by Functionality (CRUD)**
+
+| CRUD   | HTTP Method                        |
+|--------|------------------------------------|
+| Create | POST, PUT (if we have id or uuid)  |
+| Read   | GET                                |
+| Update | PUT to substitute, PATCH to modify |
+| Delete | DELETE                             |
+
+<br>
+
+- Web API
+    - **The client is an application** and not a web browser
+        - It can be a JavaScript program running in the browser
+        - Server output is typically JSON (or alternatively XML or YML)
+
+
+#### SQL Injection
+**Type of security vulnerability that arises in the context of web applications with databases**, when:
+    - There are **free-to-fill text fields on the web page forms to enter search options in the database**
+    - **User input is directly concatenated with the SQL query string without “sanitization”**, or with an insecure sanitization process (terminator characters such as “ incorrectly escaped)
+    - Allows users to enter inappropriate SQL commands:
+
+
+- It can be **avoided by using prepared statements**, **which separate the SQL code from the user input**:
+    - Parameterizing the SQL query where a placeholder is used for user input, instead of doing direct concatenation
+    - Automatically sanitizing user input, treating it as literal values ​​rather than executable SQL code
+
+
+
+#### Concurrency & Transactions
+- Web applications that access databases increase the problem of concurrent access, particularly if they are publicly accessible.
+- It is essential that the application code access to the database is done through transactions that guarantee the Atomicity, Consistency, Isolation and Durability of the operations performed on the data.
+- Access blocks corresponding to a conceptual transaction (e.g. transferring money from account A to account B) must be executed within the scope of an SQL transaction
+
+
+### Applications with Databases
+- Dynamics: **Database Connectors**
+    - **The result of any SQL query is a set of tuples**
+    - Imperative programming languages ​​like Python do not implement the tuple set data type
+    - The database connector uses cursors as a mechanism for adapting sets of tuples to the imperative language
 
 
 
