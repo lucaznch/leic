@@ -10,6 +10,7 @@ This summary was made as a way to study for my exam, and definitely not to use i
 2. [E-A Model](#e-a-model)
 3. [E-A Conversion](#e-a-relational-conversion)
     * [Association Conversion](#association-conversion)
+    * [Other Conversions](#other-conversions)
 4. [Relational Algebra](#relational-algebra)
     * [Select](#select)
     * [Project](#project)
@@ -24,6 +25,8 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Assignment](#assignment)
     * [Aggregation](#aggregation)
     * [Division](#division)
+    * [NULL](#nulls-in-relational-algebra)
+    * [SQL Equivalent](#relational-algebra-in-sql)
 5. [SQL](#structured-query-language-sql)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
@@ -340,7 +343,7 @@ Sometimes, the model is not enough to represent all the requirements of our appl
 
             ![total](media/ea14.png)
             
-            4. **Total or Full Disjoint**: The superclass A has to be subclass B or subclass C, but not both.
+            4. **Full Disjoint**: The superclass A has to be subclass B or subclass C, but not both.
 
             ![total-disjoint](media/ea16.png)
 
@@ -491,6 +494,39 @@ Sometimes, the model is not enough to represent all the requirements of our appl
 - Association **1-1 with total participation**
 
     ![e28](media/ea28.png)
+
+
+### Other Conversions
+
+- **Weak Entity**
+
+    ![weak](media/weak-ent-rel.png)
+
+- **Nestd Weak Entities**
+
+    ![weak-nest](media/weak-nest-rel.png)
+
+- **Free Specialization**
+
+    ![free-r](media/free-spec-rel.png)
+
+- **Disjoint Specialization**
+
+    ![disj-r](media/disj-spec-rel.png)
+
+- **Total Specialization**
+
+    ![tot-r](media/total-spec-rel.png)
+
+- **Full Disjoint Specialization**
+
+    - **v1**
+
+        ![fudis-r1](media/full-disj-spec-rel.png)
+
+    - **v2**
+
+        ![fudis-r2](media/full-disj-2-spec-rel.png)
 
 <br>
 <br>
@@ -872,10 +908,6 @@ $G_{\text{count-distinct(branchname)}} (\text{works})$
 
     ![grouping](media/aggr-grp3.png)
 
-
-### Correspondence to SQL
-
-
 <br>
 <br>
 
@@ -900,6 +932,90 @@ division SUCKS!
     - **Projection, Union, Difference, Intersection & Aggregation**:
         - $NULL = NULL ⇒ true$
         - NULL is treated like any other value from the perspective of tuple uniqueness (e.g. all NULLs are grouped into an aggregation)
+
+<br>
+<br>
+
+### Relational Algebra in SQL
+
+1. **Selection**
+
+$\sigma_{\text{account}>500} (\text{professor})$
+
+
+```sql
+SELECT * FROM account WHERE balance > 500;
+```
+
+account_number | branch_name | balance  
+---------------|-------------|----------
+A-102          | Uptown      | 700.0000
+A-201          | Uptown      | 900.0000
+A-215          | Metro       | 600.0000
+A-217          | University  | 650.0000
+A-222          | Central     | 550.0000
+A-305          | Round Hill  | 800.0000
+A-333          | Central     | 750.0000
+A-444          | Downtown    | 850.0000
+
+
+<br>
+<br>
+
+2. **Generalized Projection**
+
+$\Pi_{\text{account-number, balance*2}} (\text{account})$
+
+
+```sql
+SELECT account_number, balance*2 FROM account;
+```
+
+account_number | ?column?  
+---------------|-----------
+A-101          | 1000.0000
+A-102          | 1400.0000
+A-201          | 1800.0000
+A-215          | 1200.0000
+A-217          | 1300.0000
+A-222          | 1100.0000
+A-305          | 1600.0000
+A-333          | 1500.0000
+A-444          | 1700.0000
+
+
+<br>
+<br>
+
+3. **Rename**
+
+
+$\rho_x(1 \rightarrow accnum)(\Pi_{\text{account-number, balance}} (\text{account}))$
+
+```sql
+SELECT account_number AS accnum, balance FROM account;
+```
+
+accnum         | balance  
+---------------|-----------
+A-101          | 1000.0000
+A-102          | 1400.0000
+A-201          | 1800.0000
+A-215          | 1200.0000
+A-217          | 1300.0000
+A-222          | 1100.0000
+A-305          | 1600.0000
+A-333          | 1500.0000
+A-444          | 1700.0000
+
+
+<br>
+<br>
+<br>
+
+## Normalization
+
+- [ ] TODO
 
 
 <br>
