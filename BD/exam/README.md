@@ -13,6 +13,7 @@ This summary was made as a way to study for my exam, and definitely not to use i
 4. [Relational Algebra](#relational-algebra)
     * [Select](#select)
     * [Project](#project)
+    * [Generalized Projection](#generalized-projection)
     * [Cartesian Product](#cartesian-product--cross-join)
     * [Join](#join)
     * [Natural Join](#natural-join)
@@ -21,7 +22,6 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Union](#union)
     * [Intersection](#intersection--set-intersection)
     * [Assignment](#assignment)
-    * [Generalized Projection](#generalized-projection)
     * [Aggregation](#aggregation)
     * [Division](#division)
 5. [SQL](#structured-query-language-sql)
@@ -1429,6 +1429,9 @@ Consider the following **bank database**, which will be used for the next exampl
         | Oliver       |
         | Flores       |
         | Evans        |
+    
+    4. `UNION ALL`
+        - Combines the result sets of two or more `SELECT` queries **without removing duplicates**, unlike `UNION` which removes duplicates.
 
 
 
