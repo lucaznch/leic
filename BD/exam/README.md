@@ -36,6 +36,7 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Transactions](#transactions)
     * [Views](#views)
     * [Web Development and Databases](#web-development-and-databases)
+    * [Indexes](#indexes)
 
 <br>
 <br>
@@ -1033,8 +1034,133 @@ A-444          | 1700.0000
 <br>
 
 ## Normalization
+Normalization is a **database design process that organizes data into tables to reduce redundancy and improve data integrity**. **The goal of normalization is to decompose relations (tables) into smaller, well-structured relations that minimize data duplication and ensure that data dependencies make sense**. This process involves applying a series of rules known as normal forms.
 
-- [ ] TODO
+
+- **Qualidade do Esquema Relacional**
+    - **Funcionalidade**:
+        - O esquema suporta todos os requisitos funcionais e captura todas restrições de integridade e relações semânticas entre os dados necessárias para o efeito
+    - **Atomicidade**:
+        - A manipulação (inserção, leitura, atualização e remoção) de factos independentes é feita de forma independente
+    - **Simplicidade**:
+        - O esquema é o mais simples possível!. Se fosse mais simples não suportaria todos os requisitos funcionais
+
+- **Consequências de não atomicidade**:
+    - Inserção: não é possı́vel inserir um item na base de dados sem ter que inserir também outro que é independente.
+    - Remoção: para remover um item, temos que remover outros itens independentes.
+    - Atualização: para atualizar um item temos que alterar outros itens independentes.
+    - Espaço de armazenamento: um problema menor, mas não neces- sariamente um problema.
+    
+- Estes problemas são gerados pelo facto do esquema não estar normalizado e, por isso, tem que se corrigir o esquema EA e relacional.
+
+
+- Na maioria das situações, podemos desenhar modelos Entidade Associação que resultam em esquemas relacionais normalizados
+    - Nem sempre é fácil e requer alguma experiência
+    - A **Teoria da Normalização está fundamentada no conceito de dependências funcionais e extensamente aplicada ao modelo Relacional, mas não no modelo Entidade Associação**.
+    - Na prática, podemos adotar um **princípio** simples: **uma entidade ou associação do modelo Entidade-Associação está normalizado quando as relações resultantes estão normalizadas**
+
+
+- A Teoria da Normalização visa:
+    - Reduzir a redundância da informação
+    - Garantir a atomicidade dos factos
+    - Transformar as RIs resultantes de Dependências Funcionais em restrições de chaves candidatas suportadas pelo modelo relacional
+- Da Teoria da Normalização, iremos abordar os seguintes conceitos:
+    - Dependências Funcionais
+    - Formas Normais
+    - Decomposições de Relações
+
+### Dependências funcionais:
+
+- **X determina Y**: significa que para cada instância de X existe uma e uma só instância válida de Y (i.e. sabendo X consegue-se saber Y obrigatoriamente). Representa-se por $X → Y$ e nela o X é determinante e o Y é dependente.
+- Notas:
+    - Para verificar dependências funcionais teria que se verificar todas as linhas de todas as relações, o que não é exequı́vel.
+- Por observação pode-se apenas determinar se há independência entre atributos e para isso é preciso o conhecimento do domı́nio e a observação dos dados.
+
+
+- **Axiomas de Armstrong**:
+    - **Reflexividade**: qualquer conjunto de atributos é funcionalmente de- pendente de qualquer um dos seus super-conjuntos ($Y ⊆ X ⇒ X → Y$).
+    - **Incremento**: qualquer número de atributos podem ser adicionados em simultâneo ao determinante e dependente ($∀Z, X → Y ⇒ XZ → Y Z$).
+    - **Transitividade**: um dependente de outro dependente é dependente ao primeiro determinante ($X → Y ∧ Y → Z ⇒ X → Z$).
+
+- **Corolários dos Axiomas**:
+    - **Auto-reflexividade**: qualquer conjunto de atributos depende de si mesmo ($X → X$).
+    - **Decomposição**: cada um dos atributos do dependente é dependente do determinante ($X → Y Z ⇒ X → Y ∧ X → Z$).
+    - **União**: dois dependentes do mesmo determinante podem ser unidos ($X → Y ∧ X → Z ⇒ X → Y Z$).
+    - **Composição**: quaisquer dois pares de dependências funcionais podem ser combinados ($X → Y ∧ A → B ⇒ XA → Y B$).
+
+
+![xmp](media/norm1.png)
+
+
+- **Chaves e Dependências Funcionais**:
+    - $K ⊆ R$ é uma superchave de $r(R)$ se $K → R$ (i.e. K é um conjunto de atributos que determina funcionalmente toda a relação).
+    - $K ⊆ R$ é uma chave candidata de $r(R)$ **sse** $K → R ∧ α ⊂ K : α → R$ (i.e. K é um conjunto de atributos que determina funcionalmente toda a relação e não contém nenhum subconjunto de atributos que também a determina [tem que ser mı́nima]).
+    - **Super-chave**: qualquer conjunto de atributos que sirva para identificar univocamente os tuplos de uma relação (pode conter mais atributos do que o necessário).
+    - **Chave candidata**: conjunto mı́nimo de atributos necessário para identificar univocamente os tuplos de uma relação (se se retirar um atributo, deixa de ser chave). Podem haver várias chaves candidatas.
+    - **Chave primária**: uma das chaves candidatas (não importa qual).
+
+
+
+- **Como determinar chaves candidatas**:
+Começar com a superchave trivial (todos os atributos) e ir reduzindo:
+1. Para cada dependência, tirar os dependentes da superchave sempre e somente quando o determinante estiver na super chave.
+2. Verificar se a super chave resultante é chave candidata (decompor e verificar fecho).
+3. Verificar se existem outras superchaves (se os atributos chave que restaram existem enquanto dependentes).
+
+![example1](media/norm2.png)
+
+![example1](media/norm3.png)
+
+![example1](media/norm3.png)
+
+- `As chaves candidatas são AD, BD, e CD`
+
+<br>
+
+- **Formas Normais**: São formas de classificar relações relativamente a redundâncias. Formas normais (as sucessoras dependem das anteriores):
+
+    1. **1ª forma normal**: atributos são atómicos (não têm estrutura, com exceção dos tipos de dados atómicos como intervalo de tempo, coordenadas GPS, etc., que possam ser suportados pelo SGBD). Esta pode variar porque depende também do programa além do esquema (por exemplo, guardar numa string um nome [normal] e uma morada vs guardar 2 strings diferentes [não normal]).
+
+    2. **2ª forma normal**: atributos devem depender das chaves na sua to- talidade (e não a um subconjunto delas só).
+
+    3. **3ª forma normal**: não há dependências entre atributos não chave (por exemplo, torneio(nome, year, winner, winner’s date of birth) com apenas nome e year a serem chaves, o que não é aceite uma vez que a data de nascimento depende do winner e o winner não é chave).
+
+    4. **Forma normal de Boyce-Codd**: todos os determinantes são chaves candidatas na sua totalidade (impede que chaves dependam de outras).
+
+
+- **Decomposição de Relações**: Consiste em normalizar o desenho de uma base de dados para evitar anomalias. Ela pega nas relações que não estejam na 3ª forma normal ou na forma de Boyce-Codd e tenta a decompor em n relações tais que:
+
+    - Todas as relações novas estejam na forma Boyce-Codd ou na 3ª forma
+    normal.
+    - Não haja perda de informação.
+    - Não haja perda de dependências funcionais. Esta decomposição consiste em criar n projeções da relação de forma a que cada atributo de r esteja presente em pelo menos uma projeção.
+
+
+- **Perda de informação na Decomposição**:
+
+    - Uma decomposição diz-se sem perdas de informação (lossless join) quando a relação original pode ser obtida pela junção natural das relações compostas.
+
+    - Teorema de Heath – diz que podemos decompor uma relação em duas se no fim pelo menos uma delas tiver como chave os atributos que ambas têm em comum ($R = ΠXY (R) ▷◁ ΠXZ (R)$). O seu não cumprimento gera perda de informação.
+
+    - Perda de informação dá-se quando ou linhas se perdem ou linhas aparecem do nada após o natural join das divisões.
+
+        - É sempre possı́vel decompor algo que não está na 3ª forma normal de forma a que:
+            - A decomposição é sem perdas de informação.
+            - As dependências funcionais são preservadas.
+            - Mas pode haver redundância e anomalias.
+        - É sempre possı́vel decompor algo que não está na forma Boyce-Codd de forma a que:
+            -A decomposição é sem perdas de informação.
+            - Mas pode haver perdas de dependências funcionais (o que pode levar a anomalias).
+
+    - Uma decomposição tem perda de dependências funcionais sempre que o
+    dependente e o determinante de uma dependência funcional (não trivial) não
+    co-ocorrem em nenhuma das relações resultantes da decomposição.
+
+
+
+
+
+
 
 
 <br>
@@ -1695,7 +1821,7 @@ Consider the following **bank database**, which will be used for the next exampl
 - Can be used in:
     - **Functions** (`CREATE FUNCTION`)
     - **Procedures** (`CREATE PROCEDURE`)
-    - Indirectly in **Triggers** (C`REATE TRIGGER`) that execute functions
+    - Indirectly in **Triggers** (`CREATE TRIGGER`) that execute functions
 
 - **Functions**
 
@@ -1719,7 +1845,7 @@ Consider the following **bank database**, which will be used for the next exampl
 
     - Note that it is possible to **return the output in the arguments**.
     - Output(s) defined with `OUT`.
-    - **Allows multiple output**s.
+    - **Allows multiple outputs**.
 
 
     ```sql
@@ -2175,17 +2301,379 @@ In many cases, **access to the database is done through a web application**, in 
 - Dynamics: **Database Connectors**
     - **The result of any SQL query is a set of tuples**
     - Imperative programming languages ​​like Python do not implement the tuple set data type
-    - The database connector uses cursors as a mechanism for adapting sets of tuples to the imperative language
+    - **The database connector uses cursors as a mechanism for adapting sets of tuples to the imperative language**
 
 
 
+#### Psycopg – PostgreSQL Adapter for Python
+Using Psycopg objects with context managers (i.e. with `with`) guarantees the automatic closing of connections and the release of resources at the end of the block (in psycopg3).
+
+- `connect()` **returns a Connection**
+    - `conn.cursor()` returns Cursor
+    - `conn.commit()` and conn.rollback()
+
+- **Execute SQL**
+    - `cur.execute()`
+    - `cur.executemany()`
+
+- **Go to fetch sets of tuples**
+    - `cur.fetchone()`
+    - `cur.fetchmany()`
+
+
+```py
+import psycopg
+
+# connect to existing db
+with psycopg.connect("dbname=test user=postgres") as conn:
+
+        # open a cursor to perform db operations
+        with conn.cursor() as cur:
+
+            # pass data to fill a query placeholders and let psycopg perform
+            # the correct conversion (no SQL injection)
+            cur.execute(
+                "INSERT INTO test (num, data) VALUES (%s, %s)",
+                (100, "abcdef")
+            )
+
+            # query the db and obtain data as python objects
+            cur.execute("SELECT * FROM test")
+
+            # will return (1, 100, "abcdef")
+            cur.fetchone()
+
+            # we can use cur.fetchmany(), cur.fetchall() to return a list of several records or even iterate over the cursor
+
+
+            for record in cur:
+                print(record)
+            
+            conn.commit()
+```
+
+Using Psycopg objects **with context managers** (i.e. with `with`) guarantees the automatic closing of connections and the release of resources at the end of the block (in psycopg3).
+- A record is inserted into the table when leaving the context of with .. as conn
+    - commit()
+    - close()
+
+Using Psycopg objects **without context managers** (i.e. without `with`) does not guarantee that connections will be closed and resources will be released at the end of the block.
+- No tuple is inserted into the table
+- it is necessary to call conn.commit()
+
+```py
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgres://bank:bank@postgres/bank")
+
+pool = ConnectionPool(
+    conninfo=DATABASE_URL,
+    kwargs={
+        "autocommit": True,  # If True don’t start transactions automatically.
+        "row_factory": namedtuple_row,
+    },
+    min_size=4,
+    max_size=10,
+    open=True,
+    # check=ConnectionPool.check_connection,
+    name="postgres_pool",
+    timeout=5,
+)
+
+
+@app.route("/", methods=("GET",))
+@app.route("/accounts", methods=("GET",))
+def account_index():
+    """Show all the accounts, most recent first."""
+
+    with pool.connection() as conn:
+        with conn.cursor() as cur:
+            accounts = cur.execute(
+                """
+                SELECT account_number, branch_name, balance
+                FROM account
+                ORDER BY account_number DESC;
+                """,
+                {},
+            ).fetchall()
+            log.debug(f"Found {cur.rowcount} rows.")
+
+    return jsonify(accounts), 200
+
+
+@app.route(
+    "/accounts/<account_number>/update",
+    methods=(
+        "PUT",
+        "POST",
+    ),
+)
+def account_update_save(account_number):
+    """Update the account balance."""
+
+    balance = request.args.get("balance")
+
+    error = None
+
+    if not balance:
+        error = "Balance is required."
+    if not is_decimal(balance):
+        error = "Balance is required to be decimal."
+
+    if error is not None:
+        return jsonify({"message": error, "status": "error"}), 400
+    else:
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE account
+                    SET balance = %(balance)s
+                    WHERE account_number = %(account_number)s;
+                    """,
+                    {"account_number": account_number, "balance": balance},
+                )
+                # The result of this statement is persisted immediately by the database
+                # because the connection is in autocommit mode.
+                log.debug(f"Updated {cur.rowcount} rows.")
+
+                if cur.rowcount == 0:
+                    return (
+                        jsonify({"message": "Account not found.", "status": "error"}),
+                        404,
+                    )
+
+        # The connection is returned to the pool at the end of the `connection()` context but,
+        # because it is not in a transaction state, no COMMIT is executed.
+
+        return "", 204
+
+
+if __name__ == "__main__":
+    app.run()
+```
+
+<br>
+<br>
+
+### Indexes
+An index in SQL is a database object that **improves the speed of data retrieval operations on a table** at the cost of additional storage space and maintenance overhead.<br>
+
+Indexes are created on **one or more columns of a table** and can significantly enhance query performance by allowing the database engine to locate data more quickly.
+
+
+| `key` | `pointer to register` |
+|-----|-------------------------|
+
+
+- **Query without Index**
+    - Involves sequential searching or scanning of the file where the table is stored
+        - $O(n)$ for queries against a table
+        - $O(np)$ for combining p tables
+        - Complexity scales with chained selects
+
+- **Index Costs**
+- Storage (generally small compared to data files, but not always negligible)
+- Performance in writing operations (delete, insert, update)
+- It is necessary to update not only the operation table(s) but also all indexes on them
+
+
+```sql
+CREATE [UNIQUE] INDEX name ON table_name [USING method]
+({column_name | (expression)} [ASC|DESC] [NULLS {FIRST|LAST}] [, ...] )
+[INCLUDE (column_name[, ...])]
+[NULLS [NOT] DISTINCT]
+[WHERE predicate]
+```
+
+```sql
+-- example
+
+CREATE INDEX bal_acc ON account (balance);
+```
+
+<br>
+<br>
+
+- **Ordered Index/Clustering/Primary**
+    - Indexes the column by which the data is **physically sorted in the file**
+
+- **Unordered/Secondary Index**
+    - ...
+
+<br>
+<br>
+
+#### Composite Key Indexes
+- The key of an index can be composite, i.e., indexing not a single attribute but a set of two or more attributes
+- **Composite indexes can be advantageous for queries that require multiple comparisons**, e.g.:
+
+```sql
+SELECT account_number
+FROM account
+WHERE branch_name = “Perryridge” AND balance = 1000;
+```
+
+```sql
+CREATE INDEX bran_bal_acc ON account (branch_name,balance);
+```
+
+#### B-Tree Index
+- Default index method in PostgreSQL, as it is the most common
+- B-tree: a self-balancing tree data structure that keeps data ordered
+    - Generalization of the binary search tree, in which each node can have n children
+- **Ideal for range queries (>, < or range)** but also suitable for equality
+
+- default method; unique that supports UNIQUE indexes
+    - Automatically created for PRIMARY KEY or UNIQUE constraints
 
 
 
+#### Hash Index
+- A container stores a set of inputs (value, pointer(s))
+    - Typically a container occupies one block on disk
+- Hash function receives a value as a parameter and determines the container, but in the same container there can be different values
+- Within containers, entries are searched sequentially
+- **They are best for equality selection (e.g. joins)**
+- **Do not support range queries (>, < or range)**
+
+- **do not support composite key indexes**
+
+#### Bitmap Index
+- A bitmap index over an attribute has a bitmap over each value of the attribute
+- Each bitmap has as many bits as registers
+- Answers to queries are obtained with logical operations on bitmaps (AND, OR, NOT)
+- They are especially advantageous in low cardinality columns (i.e., proportionally low number of values) to support queries on multiple attributes
+
+**Use Cases for Bitmap Indexes**
+- Data Warehousing:
+
+    - Ideal for data warehousing applications where queries are read-heavy and involve complex analytical operations.
+    - Suitable for star schema designs where fact tables have foreign key columns pointing to dimension tables.
+
+
+- Decision Support Systems:
+
+    - Bitmap indexes are beneficial in decision support systems where complex queries are common.
+    - Efficiently handles queries that filter on multiple low-cardinality columns.
+
+
+- Read-Heavy Applications:
+
+    - Any application with a workload dominated by read operations and relatively few write operations can benefit from bitmap indexes.
 
 
 
+<br>
+<br>
 
+
+#### Selectivity of a Query
+- It is **inversely proportional to the % of records in a table that will be included in the response to the query**
+- The **higher the selectivity, the lower the % of records** (and fewer data transfer operations from the storage system and
+processing)
+- **Low selectivity reduces the usefulness of indices**
+
+
+
+`selectivity = (number of rows selected by query) / (total number of rows in table)
+`
+
+- Consider a table `employees` with 100,000 rows
+```sql
+SELECT * FROM employees WHERE employee_id = 12345;
+```
+
+$selectivity = 1 / 100000$
+
+
+
+### Indexes and Keys
+- `PRIMARY KEY` and `UNIQUE` declarations implicitly create indexes
+    - In both cases they are UNIQUE indexes (and therefore of the B-tree type)
+    - In the case of the PRIMARY KEY there is also a NOT NULL restriction (which has nothing to do with the index)
+- Creating a UNIQUE index for “NULLS NOT DISTINCT” continues to allow a single NULL
+- FOREIGN KEY declarations in PostgreSQL require that there be an index on the referenced column(s)
+- An index is not implicitly created on the referencing column(s), but it is best practice to create one explicitly
+
+
+### Queries and Indexes
+Let us consider the `Employee` table with PK **eID** and `Department`table with PK **dno**.
+
+
+
+1. This query d**oes not involve** **filtering** or **grouping conditions**, therefore it does not benefit from the creation of a new index
+
+```sql
+SELECT * FROM Employee;
+```
+
+
+<br>
+
+
+2. This query also does not involve filtering or grouping conditions (due to ALL), so it does not benefit from the creation of a new index
+
+```sql
+SELECT name, age FROM Employee e1
+UNION ALL
+SELECT name, age FROM Employee e2;
+```
+
+3. In this case, duplicates are removed, which involves sorting, so you would **benefit from an index on (name, age) in both tables**.
+
+
+```sql
+SELECT name, age FROM Employee e1
+UNION
+SELECT name, age FROM Employee e2;
+```
+
+4. Since eID is PK in both tables, no additional index is needed for the join; but filtering by skill_name would benefit from an index.
+
+```sql
+SELECT * FROM Employee JOIN Skill USING (eID)
+WHERE skill_name = ‘SQL’;
+```
+
+
+5. Being the PK of Department, we do not need indexes for the JOIN
+
+    - What indexes can we create on Employee to optimize the query?
+        - B-tree in `salary`
+        - Hash in `hobby`
+            - Only one of them is needed, and determining which is best requires
+            determine the selectivity of conditions
+
+```sql
+SELECT e.name, d.mgr FROM Employee e JOIN Department d USING (dno)
+WHERE e.salary BETWEEN 10000 AND 20000 AND e.hobby=‘Stamps’;
+```
+
+6. Query with conditions
+    - 6.1. As % can be any character, an eventual index in name would not be used in this interrogation
+    ```sql
+    SELECT name, age FROM Employee WHERE name LIKE ‘%Greg%’;
+    ```
+
+    - 6.2. Here an index on name would be used, as % only appears at the end of the string (we know the prefix)
+
+    ```sql
+    SELECT name, age FROM Employee WHERE name LIKE ‘Greg%’;
+    ```
+
+    - 6.3. There is equality in fields b and d, so they must be the first in any index
+    - There is the range operation on c and e, but we only need to put one of the fields in the filter
+    - Therefore, we have the following index hypotheses (all B-tree) to choose depending on the selectivity of each column:
+
+    ```sql
+    SELECT * FROM Employee WHERE b = 5 AND c > 10 AND d = 15 AND e <= 20;
+    ```
+
+    ```sql
+    CREATE INDEX idx ON tblEmployee(b,d,c);
+    CREATE INDEX idx ON tblEmployee(b,d,e);
+    CREATE INDEX idx ON tblEmployee(d,b,c);
+    CREATE INDEX idx ON tblEmployee(d,b,e);
+    ```
 
 
 
