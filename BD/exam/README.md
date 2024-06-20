@@ -369,6 +369,8 @@ Sometimes, the model is not enough to represent all the requirements of our appl
     - An Aggregation cannot have attributes: they must be placed in the aggregated Association
     - For the purposes of Associations, an **Aggregation counts as any Entity**
 
+    ![agg](media/agg-ea.png)
+
 <br>
 <br>
 <br>
@@ -746,7 +748,7 @@ $\rho_x(3 \rightarrow A)(r)$
 | 333333         | French Toast        |     100 |       3 |
 
 
-$ \rho_{\text{product\_code} \rightarrow \text{code}, \text{product\_name} \rightarrow \text{name}} (\text{product}) $
+$\rho_{\text{product\_code} \rightarrow \text{code}, \text{product\_name} \rightarrow \text{name}} (\text{product})$
 
 
 | `code` | `name`              | `price` | `stock` |
@@ -855,18 +857,24 @@ $r ← E$
 - Convenient for saving expression results so that you can reuse them in more complex expressions, such as a series of expressions
 
 ### Aggregation
-$(G1, ..., Gn) \, G (F1(), ..., Fm()) \, (r)$
 
+- **Unary operation** that **returns a single tuple that aggregates the values ​​of the tuples of a relation**
 
-- **Unary operation** that r**eturns a single tuple that aggregates the values ​​of the tuples of a relation**
+$G_{\text{sum(salary)}} (\text{works})$
 
-$G_{\text{sum}}(\text{salary}) \, (\text{works})$
-
-$G_{\text{count-distinct}}(\text{branchname}) \, (\text{works})$
+$G_{\text{count-distinct(branchname)}} (\text{works})$
 
 - **Aggregation with Grouping**
 
-    ![grouping](media/aggr-group.png)
+    ![grouping](media/aggr-grp1.png)
+
+    ![grouping](media/aggr-grp2.png)
+
+    ![grouping](media/aggr-grp3.png)
+
+
+### Correspondence to SQL
+
 
 <br>
 <br>
