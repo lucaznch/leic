@@ -13,6 +13,17 @@ This summary was made as a way to study for my exam, and definitely not to use i
 4. [Relational Algebra](#relational-algebra)
     * [Select](#select)
     * [Project](#project)
+    * [Cartesian Product](#cartesian-product--cross-join)
+    * [Join](#join)
+    * [Natural Join](#natural-join)
+    * [Rename](#rename)
+    * [Difference](#difference--set-difference)
+    * [Union](#union)
+    * [Intersection](#intersection--set-intersection)
+    * [Assignment](#assignment)
+    * [Generalized Projection](#generalized-projection)
+    * [Aggregation](#aggregation)
+    * [Division](#division)
 5. [SQL](#structured-query-language-sql)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
@@ -498,6 +509,8 @@ A **relational (algebraic) expression** takes one or more relations and returns 
 #### Select
 $\sigma_p(r)$
 
+![select](media/select.png)
+
 - **Unary operation** that **selects tuples from a relation** that satisfy a given **predicate**
     - where **p** is the selection **predicate** over the **r relation**
 - Similar to `WHERE`
@@ -538,11 +551,11 @@ $$
 | ---- | ------------| --------: | -------: |
 | 2    | Jack        | Physics   | 95000    |
 
-<br>
 
 ### Project
 $\Pi_{\text{A1,...,Ak}} (\text{r})$
 
+![project](media/project.png)
 
 - **Unary operation** that **returns a projection** of the argument relation into a lower dimensional space, i.e., with only the listed attributes
     - where each **Ai is an attribute name** of the **relation r**
@@ -576,14 +589,26 @@ $$
 | Jack    |
 | Jill    |
 
+### Generalized Projection
+- Extension to projection where algebraic operations involving attributes are allowed
+
+$\Pi_{\text{name, salary*1.1}} (\text{professor})$
+
+$\Pi_{\text{customer, limit-balance}} (\text{credit\_info})$
+
+
 ### Cartesian Product / Cross-Join.
 $r \times s$
+
+![cartesian](media/cartesian.png)
 
 - **Binary operation** that **combines** all tuples of one relation with all tuples of a second relation.
     - Forms all possible pairs of tuples from the two relations.
 - The operation is commutative and associative.
+- The Cartesian product between two relations **associates each value of the first relation with all the values ​​of the second**.
+    - This means that, if the first relation has **n tuples** and the second has **m tuples**, the relation obtained by the Cartesian product between these two will have **n x m tuples**.
 
-Consider the following **professor** and **teaches** relationship
+Consider the following **professor** and **teaches** relationships
 
 | `ID` | `name`      | `dept`    | `salary` |
 | ---- | ------------| --------: | -------: |
@@ -631,9 +656,6 @@ $ \sigma_{\text{professor.id}=\text{teaches.id}} (\text{professor} \times \text{
 
 **8. Easier example to see the cartesian product**
 
-
-<div class="side-by-side">
-
 | `A` |
 | --- |
 | 1   |
@@ -658,8 +680,192 @@ $=$
 | 3   | a   | X   |
 | 3   | b   | Y   |
 
-</div>
+### Join
+$r \bowtie_{\theta} s = \sigma_{\theta}(r \times s)$
 
+
+- **Binary operation** that combines a Cartesian product with a selection with a predicate on attributes
+- Where **r** and **s** are relations and **θ is a predicate of attributes** of **r ∪ s**
+- Combines tuples from two relations (tables) based on a condition specified using a comparison operato
+    - for the relations **r(A, B)** and **s(B, C)**, the join $r \bowtie_{A=B} s$ would produce tuples combining attributes A, B and C where A in **r** matches B in **s**.
+
+
+### Natural Join
+$r \bowtie s$
+
+- The natural join is a specific type of join where **the join condition is implicit and based on the common attributes** (attributes with the same name) between the two relations.
+
+| `A` | `B` |
+| --- | --- |
+| 1   | a   |
+| 2   | b   |
+| 3   | c   |
+
+$\bowtie$
+
+| `B` | `C` |
+| --- | --- |
+| a   | X   |
+| b   | Y   |
+| c   | Z   |
+
+$=$
+
+| `A` | `B` | `C` |
+| --- | --- | --- |
+| 1   | a   | X   |
+| 2   | b   | Y   |
+| 3   | c   | Z   |
+
+
+![natural-vs-join](media/join-natural.png)
+
+
+### Rename
+$\rho_x(3 \rightarrow A)(r)$
+
+- Assigns the name **x** to the relation **r** and renames the **3rd** attribute to **A**
+- similar to `AS`
+
+| `product_code` | `product_name`      | `price` | `stock` |
+| -------------- | ------------------- | ------: | ------: |
+| 111111         | Cookies             |      50 |      10 |
+| 222222         | Bread               |      25 |      15 |
+| 333333         | French Toast        |     100 |       3 |
+
+
+$ \rho_{\text{product\_code} \rightarrow \text{code}, \text{product\_name} \rightarrow \text{name}} (\text{product}) $
+
+
+| `code` | `name`              | `price` | `stock` |
+| ------ | ------------------- | ------: | ------: |
+| 111111 | Cookies             |      50 |      10 |
+| 222222 | Bread               |      25 |      15 |
+| 333333 | LFrench Toast       |     100 |       3 |
+
+
+### Difference / Set-Difference
+$r - s$
+
+- **Binary operation** that **returns tuples that are in a first relation but not in a second relation**
+- The difference is only defined for compatible relations, i.e., r and s have the same scheme:
+    - have the same arity
+    - have compatible attribute domains
+
+| `name` (student) |
+| ---------------- |
+| Diogo            |
+| Tomás            |
+| Rafa             |
+| João             |
+
+| `name` (teacher) |
+| ---------------- |
+| João             |
+| André            |
+
+$student - teacher$
+
+| `name` |
+| ------ |
+| Diogo  |
+| Tomás  |
+| Rafa   |
+
+### Union
+$r ∪ s$
+
+- both r and s must have the same number of attributes
+- the types (i.e., the domains) of the attributes in the ith position of each of the relations must match.
+
+
+| `name` (student) |
+| ---------------- |
+| Diogo            |
+| Tomás            |
+| Rafa             |
+| João             |
+
+| `name` (teacher) |
+| ---------------- |
+| João             |
+| André            |
+
+
+$student ∪ teacher$
+
+| `name` |
+| ------ |
+| Diogo  |
+| Tomás  |
+| Rafa   |
+| João   |
+| André  |
+
+
+### Intersection / Set-Intersection
+$r ∩ s$
+
+- **Binary operation** that r**eturns the tuples that are in a first relationship and a second relationship**.
+
+| `name` (student) |
+| ---------------- |
+| Diogo            |
+| Tomás            |
+| Rafa             |
+| João             |
+
+| `name` (teacher) |
+| ---------------- |
+| João             |
+| André            |
+
+$student ∩ teacher$
+
+| `name` |
+| ------ |
+| João   |
+
+
+### Assignment
+$r ← E$
+
+- **Unary operation** that **“stores” a relationship resulting from an expression** and **assigns it a name**
+- Convenient for saving expression results so that you can reuse them in more complex expressions, such as a series of expressions
+
+### Aggregation
+$(G1, ..., Gn) \, G (F1(), ..., Fm()) \, (r)$
+
+
+- **Unary operation** that r**eturns a single tuple that aggregates the values ​​of the tuples of a relation**
+
+$G_{\text{sum}}(\text{salary}) \, (\text{works})$
+
+$G_{\text{count-distinct}}(\text{branch\_name}) \, (\text{works})$
+
+- **Aggregation with Grouping**
+
+    ![grouping](media/aggr-group.png)
+
+### Division
+division SUCKS!
+
+
+### NULLs in Relational Algebra
+- **NULLs** are an extension to the relational model, and therefore also to relational algebra
+- **NULLs** lead to a three-valued predicate logic: **true, false, and unknown**
+    - **Comparisons or arithmetic expressions involving NULLs produce unknown** (including $NULL = NULL$)
+    - **Boolean operators (AND, OR, NOT) involving unknown produce unknown, except**:
+        - $false ∧ unknown = false$
+        - $true ∨ unknown = true$
+
+- **NULLs affect the behavior of algebraic operations** differently:
+    - **Selection & Join**:
+        - $NULL = NULL ⇒ unknown$
+        - Only true predicates are selected
+    - **Projection, Union, Difference, Intersection & Aggregation**:
+        - $NULL = NULL ⇒ true$
+        - NULL is treated like any other value from the perspective of tuple uniqueness (e.g. all NULLs are grouped into an aggregation)
 
 
 <br>
