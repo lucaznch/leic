@@ -748,7 +748,7 @@ $\rho_x(3 \rightarrow A)(r)$
 | 333333         | French Toast        |     100 |       3 |
 
 
-$\rho_{\text{product\_code} \rightarrow \text{code}, \text{product\_name} \rightarrow \text{name}} (\text{product})$
+$\rho_{\text{product-code} \rightarrow \text{code}, \text{product-name} \rightarrow \text{name}} (\text{product})$
 
 
 | `code` | `name`              | `price` | `stock` |
@@ -827,7 +827,7 @@ $student ∪ teacher$
 ### Intersection / Set-Intersection
 $r ∩ s$
 
-- **Binary operation** that r**eturns the tuples that are in a first relationship and a second relationship**.
+- **Binary operation** that **returns the tuples that are in a first relationship and a second relationship**.
 
 | `name` (student) |
 | ---------------- |
