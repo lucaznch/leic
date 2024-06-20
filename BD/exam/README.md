@@ -9,7 +9,7 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [Database Design](#database-design)
 2. [E-A Model](#e-a-model)
 3. [E-A Conversion](#e-a-relational-conversion)
-    * [Association Conversion](#conversion)
+    * [Association Conversion](#association-conversion)
 4. [Relational Algebra](#relational-algebra)
     * [Select](#select)
     * [Project](#project)
@@ -459,7 +459,7 @@ Sometimes, the model is not enough to represent all the requirements of our appl
         ![fk-relational](media/ea19.png)
 
 
-### Conversion
+### Association Conversion
 
 - Entity:
 
@@ -527,9 +527,6 @@ Consider the following **professor** relationship
 | 3    | Jill        | Physics   | 82000    |
 | 4    | Joan        | Biology   | 82000    |
 
-<br>
-<br>
-
 **1. select all professors from the Physics department**
 
 $$
@@ -551,6 +548,8 @@ $$
 | ---- | ------------| --------: | -------: |
 | 2    | Jack        | Physics   | 95000    |
 
+<br>
+<br>
 
 ### Project
 $\Pi_{\text{A1,...,Ak}} (\text{r})$
@@ -589,6 +588,9 @@ $$
 | Jack    |
 | Jill    |
 
+<br>
+<br>
+
 ### Generalized Projection
 - Extension to projection where algebraic operations involving attributes are allowed
 
@@ -596,6 +598,8 @@ $\Pi_{\text{name, salary*1.1}} (\text{professor})$
 
 $\Pi_{\text{customer, limit-balance}} (\text{credit\_info})$
 
+<br>
+<br>
 
 ### Cartesian Product / Cross-Join.
 $r \times s$
@@ -680,6 +684,9 @@ $=$
 | 3   | a   | X   |
 | 3   | b   | Y   |
 
+<br>
+<br>
+
 ### Join
 $r \bowtie_{\theta} s = \sigma_{\theta}(r \times s)$
 
@@ -689,6 +696,8 @@ $r \bowtie_{\theta} s = \sigma_{\theta}(r \times s)$
 - Combines tuples from two relations (tables) based on a condition specified using a comparison operato
     - for the relations **r(A, B)** and **s(B, C)**, the join $r \bowtie_{A=B} s$ would produce tuples combining attributes A, B and C where A in **r** matches B in **s**.
 
+<br>
+<br>
 
 ### Natural Join
 $r \bowtie s$
@@ -720,6 +729,8 @@ $=$
 
 ![natural-vs-join](media/join-natural.png)
 
+<br>
+<br>
 
 ### Rename
 $\rho_x(3 \rightarrow A)(r)$
@@ -743,6 +754,8 @@ $ \rho_{\text{product\_code} \rightarrow \text{code}, \text{product\_name} \righ
 | 222222 | Bread               |      25 |      15 |
 | 333333 | LFrench Toast       |     100 |       3 |
 
+<br>
+<br>
 
 ### Difference / Set-Difference
 $r - s$
@@ -771,6 +784,9 @@ $student - teacher$
 | Diogo  |
 | Tomás  |
 | Rafa   |
+
+<br>
+<br>
 
 ### Union
 $r ∪ s$
@@ -802,6 +818,8 @@ $student ∪ teacher$
 | João   |
 | André  |
 
+<br>
+<br>
 
 ### Intersection / Set-Intersection
 $r ∩ s$
@@ -826,6 +844,8 @@ $student ∩ teacher$
 | ------ |
 | João   |
 
+<br>
+<br>
 
 ### Assignment
 $r ← E$
@@ -847,9 +867,14 @@ $G_{\text{count-distinct}}(\text{branch\_name}) \, (\text{works})$
 
     ![grouping](media/aggr-group.png)
 
+<br>
+<br>
+
 ### Division
 division SUCKS!
 
+<br>
+<br>
 
 ### NULLs in Relational Algebra
 - **NULLs** are an extension to the relational model, and therefore also to relational algebra
