@@ -1,5 +1,6 @@
 # Databases summary
 This summary was made as a way to study for my exam, and definitely not to use it to copy during the exam!<br>
+
 **Contents**:
 1. [Databases and Database Management Systems](#databases-and-database-management-systems-dbms)
     * [Database](#database)
@@ -28,9 +29,13 @@ This summary was made as a way to study for my exam, and definitely not to use i
     * [NULL](#nulls-in-relational-algebra)
     * [SQL Equivalent](#relational-algebra-in-sql)
 5. [SQL](#structured-query-language-sql)
+    * [Data Types](#data-types)
     * [Basic](#sql-in-practice-basic)
     * [Advanced](#sql-in-practice-advanced)
-
+        * [SQL/PSM](#sqlpsm-persistent-stored-modules)
+    * [Transactions](#transactions)
+    * [Views](#views)
+    * [Web Development and Databases](#web-development-and-databases)
 
 <br>
 <br>
@@ -1008,6 +1013,20 @@ A-305          | 1600.0000
 A-333          | 1500.0000
 A-444          | 1700.0000
 
+<br>
+<br>
+
+4. **Aggregation**
+
+    ```sql
+    SELECT COUNT(*) FROM customer;
+    ```
+
+    - **Aggregation with Grouping**
+
+        ```sql
+        SELECT customer_city AS city, COUNT(*) AS total_customers FROM customer GROUP BY customer_city;
+        ```
 
 <br>
 <br>
@@ -1070,10 +1089,11 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
 > If we do not indicate a condition with the `WHERE` clause, the `UPDATE`/`DELETE` will rewrite/delete all existing rows in the table.
 
 
+<br>
+<br>
 
 
-
-**Data Types**
+### Data Types
 - **Numeric Types**:
     - `INTEGER`
         - `BIGINT`
@@ -1096,8 +1116,9 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
 - **Boolean**
     - `BOOLEAN`
 
-
-
+<br>
+<br>
+<br>
 
 ### SQL in practice (Basic)
 
@@ -1151,6 +1172,9 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
         - `RESTRICT`
             - Similar to `NO ACTION`, but the check is immediate. The operation is prevented if it would violate the foreign key constraint.
 
+<br>
+<br>
+
 - `CHECK`
     - constraint used to specify a condition that must be met for each row in a table.
     - the **CHECK** constraint is limited to evaluating conditions within a single table; it cannot directly reference columns from other tables.
@@ -1159,6 +1183,9 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
     add constraint check_above_age
     check (age > 17)
     ```
+
+<br>
+<br>
 
 - `ALTER`
     - allows renaming the table, a column or a restriction
@@ -1178,7 +1205,8 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
     ALTER TABLE client ALTER COLUMN balance SET DEFAULT 500;
     ```
 
-
+<br>
+<br>
 
 - `COPY TO`
     - export data from a table to a file in various formats
@@ -1201,6 +1229,9 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
     -- example
     COPY client (full_name, birth, age) FROM '/path/to/clients.csv' WITH CSV HEADER;
     ```
+
+<br>
+<br>
 
 - **SQL Operators**
     - SQL has the usual operators for **arithmetic**, **comparison** and **logic**.
@@ -1246,6 +1277,9 @@ SQL includes both **DDL (Data Definition Language)** and **DML (Data Manipulatio
         SELECT ABS(salary) FROM Employees;
         ```
 
+<br>
+<br>
+
 - `LIKE` **\<pattern\>**
     - `%`: Represents zero, one, or multiple characters.
         - `LIKE 'a%'`: matches any string that starts with 'a'.
@@ -1282,6 +1316,8 @@ Consider the following **bank database**, which will be used for the next exampl
     [NULLS { FIRST | LAST}] [, ...]]
     [LIMIT {count | ALL}]
     ```
+<br>
+<br>
 
 - **Cartesian product** with `SELECT`
 
@@ -1319,15 +1355,21 @@ Consider the following **bank database**, which will be used for the next exampl
     - **account × depositor** has 3+2 = 5 columns!
     - **Cartesian product** allows data to be crossed between tables, but requires filters that interconnect the tables
 
+<br>
+<br>
+
 - **Subquery**
     - Subqueries can impact performance, especially if not optimized. Consider alternative approaches like **joins** or **common table expressions** (CTEs) for complex scenarios.
     ```sql
-    -- extremely inefficient example to select customers who have both a loan and a loan
+    -- extremely inefficient example to select customers who have both a loan and a deposit
     SELECT DISTINCT customer_name FROM customer WHERE customer_name IN (SELECT customer_name FROM borrower WHERE customer_name IN (SELECT customer_name FROM depositor));
 
     -- best alternative
     SELECT DISTINCT b.customer_name FROM borrower b JOIN depositor d ON b.customer_name = d.customer_name;
     ```
+
+<br>
+<br>
 
 - `GROUP BY`
     - **GROUP BY** is a clause in SQL used to group rows that have the same values into summary rows.
@@ -1336,6 +1378,7 @@ Consider the following **bank database**, which will be used for the next exampl
 
 
     1. How many customers are there in each city
+
         ```sql
         SELECT customer_city AS city, COUNT(*) AS total_customers FROM customer GROUP BY customer_city;
         ```
@@ -1364,6 +1407,9 @@ Consider the following **bank database**, which will be used for the next exampl
         Coimbra |               2
         Oporto  |               4
 
+<br>
+<br>
+
 
 - `ORDER BY`
     - **ORDER BY** is a clause in SQL used to sort the result set of a query based on one or more columns.
@@ -1390,6 +1436,9 @@ Consider the following **bank database**, which will be used for the next exampl
         |Uptown        | 1700000.0000 |
         |Metro         |  400200.0000 |
         |Ship Terminal |  400000.0000 |
+
+<br>
+<br>
 
 
 ![joins](media/sql-join.png)
@@ -1495,6 +1544,9 @@ Consider the following **bank database**, which will be used for the next exampl
         Brown             | 2000.0000
         Davis             | 5000.0000
 
+<br>
+<br>
+
 
 - **SET OPERATORS**
     1. `UNION`
@@ -1557,8 +1609,516 @@ Consider the following **bank database**, which will be used for the next exampl
     4. `UNION ALL`
         - Combines the result sets of two or more `SELECT` queries **without removing duplicates**, unlike `UNION` which removes duplicates.
 
+    > `UNION`, `INTERSECT` and `EXCEPT` all use `DISTINCT` to remove duplicates
 
+<br>
+<br>
+<br>
 
 ### SQL in practice (Advanced)
-- [X] TODO!
+
+- **NULL**
+
+    - In boolean expression, we have:
+        - $NULL ∧ TRUE = NULL$
+        - $NULL ∧ FALSE = FALSE$
+        - $NULL ∨ TRUE = TRUE$
+        - $NULL ∨ FALSE = NULL$
+
+    - Relational expressions will result in an **unknown** value if they contain a NULL value.
+        | expression    | result  |
+        |---------------|---------|
+        | NULL = NULL   | unknown |
+        | NULL = 5      | unknown |
+        | NULL <> NULL  | unknown |
+        | NULL <> 5     | unknown |
+
+
+    - When computing `DISTINCT`, **NULL is treated like any other value from the perspective of uniqueness of tuples**
+        - $NULL = NULL ⇒ TRUE$
+
+    - In algebraic numeric operations, any **NULL leads to a NULL result**
+        - $2 + NULL = NULL$
+        - $13 \times NULL = NULL$
+
+    - in `WHERE`'s and `JOIN`'s, NULLs and UNKNOWNs are **treated as false**
+
+    - In array operations:
+        - `IN` and `ANY` **return TRUE if there is at least one value in the array that returns true** (even if there are NULL values)
+        - `ALL` **returns NULL if there is at least one NULL** value in the array
+
+        - In `EXISTS`, NULLs are practically irrelevant
+
+    - **Dealing with NULLs**
+        - `IS NULL`
+            - $NULL⇒TRUE$
+            - $¬NULL⇒FALSE$
+        - `IS TRUE`
+            - $TRUE⇒TRUE$
+            - $¬TRUE⇒FALSE$
+        - `IS FALSE`
+            - $FALSE⇒TRUE$
+            - $¬FALSE⇒FALSE$
+        - `IS UNKNOWN`
+            - $UNKNOWN⇒TRUE$
+            - $¬UNKNOWN⇒FALSE$
+
+<br>
+<br>
+
+
+- **Assignment** with the `WITH` clause
+    - Defines a temporary result sets, **Common Table Expressions (CTE)**, that can be referred to.
+
+    ```sql
+    WITH customers_with_debt_and_deposit AS (
+        SELECT DISTINCT b.customer_name AS name FROM borrower b
+        JOIN depositor d ON b.customer_name = d.customer_name
+    )
+
+    SELECT name FROM customers_with_debt_and_deposit;
+    ```
+
+    |  name   |
+    |---------|
+    | Iacocca |
+    | Cook    |
+    | Brown   |
+
+<br>
+<br>
+
+#### SQL/PSM (Persistent Stored Modules)
+- Defines **procedural extensions for SQL**, that allow the creation and execution of stored procedures and functions.
+- Provides the capability to write procedural code that **can be stored and executed on the database server**, enhancing the functionality and performance of database applications.
+
+- Can be used in:
+    - **Functions** (`CREATE FUNCTION`)
+    - **Procedures** (`CREATE PROCEDURE`)
+    - Indirectly in **Triggers** (C`REATE TRIGGER`) that execute functions
+
+- **Functions**
+
+    ```sql
+    -- Function that returns the number of accounts for a customer given their name
+
+    CREATE FUNCTION account_count (c_name VARCHAR)
+        RETURNS INTEGER
+    AS
+    $$
+        DECLARE a_count INTEGER;
+        BEGIN
+            SELECT COUNT(*) INTO a_count
+            FROM depositor
+            WHERE customer_name = c_name;
+            RETURN a_count;
+        END
+    $$
+    LANGUAGE plpgsql;
+
+    ```
+
+    - Note that it is possible to **return the output in the arguments**.
+    - Output(s) defined with `OUT`.
+    - **Allows multiple output**s.
+
+
+    ```sql
+    -- same function, but returning output in argument instead
+
+    CREATE FUNCTION account_count ( IN c_name VARCHAR, OUT a_count INTEGER)
+    AS
+    $$
+    BEGIN
+        SELECT COUNT(*) INTO a_count
+        FROM depositor
+        WHERE customer_name = c_name;
+    END
+    $$
+    LANGUAGE plpgsql;
+    ```
+
+    - **Using the function**
+
+    ```sql
+    SELECT customer_name, customer_street, customer_city
+    FROM customer
+    WHERE account_count(customer_name) > 1;
+    ```
+    
+    <br>
+    <br>
+
+    - **Functions that Return Tables**
+
+    ```sql
+    -- Function that returns all accounts for a customer given their name
+
+    CREATE FUNCTION accounts_of(VARCHAR)
+        RETURNS SETOF account
+    AS
+    $$
+        SELECT a.account_number, branch_name, balance
+        FROM account a, depositor d
+        WHERE a.account_number = d.account_number
+        AND d.customer_name = $1;
+    $$
+    LANGUAGE sql;
+    ```
+
+    > `RETURNS SETOF account` returns a subset of the **account** relation
+
+    - **Using the function**
+
+    ```sql
+    SELECT * FROM accounts_of('Brown');
+    ```
+
+    account_number | branch_name | balance  
+    ----------------|-------------|----------
+    A-215          | Metro       | 600.0000
+    A-444          | Downtown    | 850.0000
+
+    <br>
+    <br>
+
+    - **Functions with Custom Types**
+
+    ```sql
+    CREATE TYPE account_data AS (
+        account_number VARCHAR,
+        balance NUMERIC(12,2));
+
+    CREATE FUNCTION accounts_of ( VARCHAR)
+        RETURNS account_data
+    AS
+    $$
+        SELECT a.account_number, balance
+        FROM account a, depositor d
+        WHERE a.account_number = d.account_number
+        AND d.customer_name = $1;
+    $$
+    LANGUAGE sql;
+    ```
+
+    <br>
+    <br>
+
+    - **Procedures**
+
+        ```sql
+        CREATE PROCEDURE clear_accounts()
+        AS
+        $$
+            DELETE FROM account
+            WHERE balance = 0;
+        $$
+        LANGUAGE sql;
+
+        -- Usage
+        CALL clear_accounts;
+        ```
+
+    <br>
+    <br>
+
+    | Category    | Input    | Output    | Invocation | Data Manipulation |
+    |-------------|----------|-----------|------------|-------------------|
+    | `FUNCTION`  | Optional | Mandatory | `SELECT`   | Yes               |
+    | `PROCEDURE` | Optional | Optional* | `CALL`     | Yes               |
+
+    > To call a `PROCEDURE` with outputs it is necessary to create a variable per output argument (with \set in PostgreSQL) and pass it as an argument when `CALL`ing the `PROCEDURE`. The output value will be stored in the variable.
+
+    <br>
+    <br>
+
+    - **PSM Syntax**
+
+        - `BEGIN`...`END` **blocks**
+            - Can contain multiple SQL commands
+            - May contain local variable declarations
+        - **Variable declaration**
+            - `DECLARE` <variable> <type> [`DEFAULT` <value>]
+            - The scope of the local variable is restricted to the block where it was declared
+
+        - **Cursors**
+            - **Mechanism for reading a table line by line**, analogous to iterators in other programming languages
+                - **Declaration**: `DECLARE` cursor_name `CURSOR FOR SELECT` … `FROM` …
+                - **Opening**: `OPEN` cursor_name
+                - **Iteration**: `FETCH` cursor_name `INTO` …
+                - **Closing**: `CLOSE` cursor_name
+
+
+        ```sql
+        -- cursor use example to calculate an AVG
+
+        CREATE OR REPLACE FUNCTION average_balance(OUT avg_balance REAL) AS
+        $$
+            DECLARE
+                cursor_account CURSOR FOR SELECT balance FROM account;
+                balance REAL; sum_balance REAL := 0.0; count_balance INTEGER := 0;
+            BEGIN
+                OPEN cursor_account;
+                LOOP
+                    FETCH cursor_account INTO balance;
+                    IF NOT FOUND THEN EXIT;
+                    END IF;
+                    sum_balance = sum_balance + balance;
+                    count_balance = count_balance + 1;
+                END LOOP;
+                CLOSE cursor_account;
+                avg_balance = sum_balance / count_balance;
+            END
+        $$ LANGUAGE plpgsql;
+        ```
+
+    <br>
+    <br>
+    
+    - **Triggers**
+        - **An instruction executed in reaction to a modification in the DB**
+            - Allows you to implement more sophisticated integrity restrictions as well as procedures that “resolve” problems in the state of the DB
+        - To specify a trigger it is necessary to define:
+            - The **conditions under which the trigger is fired**
+            - The **actions to be taken when the trigger is executed**
+                - Typically, call a TRIGGER FUNCTION (i.e. a function without input and with return type TRIGGER) that performs the actions
+
+        - **CREATE TRIGGER** name **{AFTER | BEFORE | INSTEAF OF} {INSERT | UPDATE | DELETE | TRUNCATE} ON** table **FOR EACH {ROW | STATEMENT} EXECUTE FUNCTION**
+
+        <br>
+        <br>
+
+        - Scenario: A customer tries to withdraw an amount greater than their balance
+        - Option 1: Cancel the operation
+
+        ```sql
+        -- option 1
+
+        CREATE OR REPLACE FUNCTION cancel_overdraft_func() RETURNS TRIGGER AS
+        $$
+        BEGIN
+            IF NEW.balance < 0 THEN
+                RAISE EXCEPTION 'A conta % tem saldo insuficiente.',
+                NEW.account_number;
+            END IF;
+            RETURN NEW;
+        END
+        $$ LANGUAGE plpgsql;
+
+
+        CREATE TRIGGER cancel_overdraft
+        AFTER UPDATE ON account 
+        FOR EACH ROW EXECUTE FUNCTION cancel_overdraft_func();
+
+
+        -- testing the trigger
+        UPDATE account SET balance = balance-500 WHERE account_number = 'A-102';
+        ERROR: A conta A-102 tem saldo insuficiente.
+        CONTEXT: PL/pgSQL function cancel_overdraft_func() line 4 at RAISE
+        ```
+
+        - Option 2:
+            - Create a loan equal to the missing amount with the same number as the account
+            - Reset the account balance to zero
+
+        ```sql
+        -- option 2
+
+        CREATE OR REPLACE FUNCTION overdraft_loan_func() RETURNS TRIGGER AS
+        $$
+        BEGIN
+            IF NEW.balance < 0 THEN
+                INSERT INTO loan VALUES (
+                    NEW.account_number, NEW.branch_name, (-1)*NEW.balance);
+                INSERT INTO borrower (
+                    SELECT customer_name, account_number FROM depositor
+                    WHERE depositor.account_number = new.account_number
+                );
+                UPDATE account SET balance = 0
+                WHERE account.account_number = NEW.account_number;
+            END IF;
+            RETURN NEW;
+        END
+        $$ LANGUAGE plpgsql;
+        ```
+
+<br>
+<br>
+
+### Transactions
+- A sequence of one or more SQL operations treated as a single unit of work. A transaction ensures that either all operations within the transaction are successfully completed and committed to the database, or none of them are, ensuring the database remains in a consistent state.
+- This all-or-nothing approach is crucial for maintaining data integrity, especially in environments where multiple users are accessing and modifying the database concurrently.
+
+<br>
+
+- Transactions are characterized by the **ACID properties**, which ensure reliable processing of database transactions:
+
+1. **Atomicity**:
+    - In a transaction, changes to the state are atomic: either all are carried out or none are carried out
+    - Ensures that all operations within a transaction are completed successfully. If any operation fails, the entire transaction is rolled back, leaving the database unchanged.
+
+2. **Consistency**:
+    - Ensures that a transaction takes the database from one consistent state to another consistent state. The database constraints must be maintained at the end of every transaction.
+
+3. **Isolation**:
+    - Ensures that transactions are isolated from each other. Changes made in a transaction are not visible to other transactions until the transaction is committed. This prevents transactions from interfering with each other in a concurrent system.
+
+4. **Durability**:
+    - Ensures that once a transaction is committed, its changes are permanent and will survive system failures.
+
+<br>
+<br>
+
+- In SQL, **any query implicitly starts a transaction, but with a single statement**
+- **To include multiple SQL statements in the same transaction** you must precede the group of statements with `START TRANSACTION` (or `BEGIN`)
+- And finish with:
+    - `COMMIT`: makes results permanent
+    - `ROLLBACK`: undoes all changes made
+
+
+    ```sql
+    START TRANSACTION;
+
+    -- check balance
+    SELECT balance FROM account WHERE account_number = 'A-101';
+
+    -- transfer 350€ from account A-101 to A-102:
+    UPDATE account SET balance = balance – 350
+    WHERE account_number = 'A-101';
+
+    UPDATE account SET balance = balance + 350
+    WHERE account_number = 'A-102';
+
+    COMMIT;
+    ```
+
+- If `START TRANSACTION` is omitted
+    - **Each query is an atomic transaction**
+        - **If there are errors**, automatic `ROLLBACK`
+        - **If there are no errors**, automatic `COMMIT`
+- Errors in the middle of a transaction (non-atomic) cause abort
+    - It is no longer possible to continue the transaction
+- We can use SAVEPOINT to save a safe point and ROLLBACK TO to return to that point
+    - It is the only way to recover from the abort state without doing full ROLLBACK
+
+
+### Views
+- **Virtual table, defined through a query**
+- **Once created, it is valid as a table for the purposes of other queries**, BUT
+    - **Does not have physical materialization**
+    - **The query is run each time the view is referenced**
+    - **The view may change between calls** if the tables it derives from are updated
+
+    ```sql
+    CREATE [OR REPLACE] [TEMP] [RECURSIVE] VIEW name [(column_name [, ...])]
+    AS query [WITH [CASCADED|LOCAL] CHECK OPTION]
+    ```
+    
+    - delete view: `DROP VIEW`
+    - access view, just like any table: `SELECT * FROM view_name`
+
+
+
+    ```sql
+    -- example
+
+    CREATE VIEW account_stats AS
+    SELECT customer_name, COUNT(*) AS num_accts
+    FROM depositor
+    GROUP BY customer_name;
+
+    SELECT * FROM account_stats;
+    ```
+
+    | customer_name | num_accts |
+    |---------------|-----------|
+    | Flores        |         1 |
+    | Iacocca       |         1 |
+    | Johnson       |         2 |
+    | Evans         |         1 |
+    | Oliver        |         1 |
+    | Cook          |         2 |
+    | Brown         |         2 |
+
+<br>
+<br>
+
+- **Updatable Views**
+    - A view is automatically **updatable when there is a direct correspondence between the view and a single table** (or updatable view) **on which the view is based**
+    - If the view is updateable, the DBMS allows `INSERT`, `UPDATE` and `DELETE` operations on the view:
+    - These operations are propagated to the table on which the view is based
+
+
+    - **Conditions for a view to be updateable**:
+        - There is exactly one entry (updatable table or view) in `FROM`
+        - Does not contain WITH, DISTINCT, GROUP BY, HAVING or LIMIT clauses at the top level (i.e. external SELECT)
+        - Does not contain set operations (UNION, INTERSECT or EXCEPT) at the top level
+        - SELECT cannot contain aggregates, or functions that return sets
+
+
+    - **Non-updatable views are “read-only” by default**
+        - `INSERT`, `UPDATE` or `DELETE` are not possible
+        - **Tt is possible to make updates to non-updatable views** through INSTEAD OF triggers, which convert operations on the view into appropriate operations on the tables on which it depends
+
+
+
+- **Temporary Views**
+    - PostgreSQL Extension
+    - **Views that are only available during a session**
+    - Are automatically removed when the session ends
+    - Can have the same name as a relationship (replacing it in all queries during the session)
+
+
+
+- **Materialized Views**
+    - The cost (CPU) of computing views “on-the-fly” may be too high for complex queries
+    - We can improve performance using caching, i.e., **keeping the view in memory or writing it to disk**
+    - **A materialized view is a view that instead of being recomputed each time it is invoked, is materialized in a table when created, and is only recomputed when explicitly updated**
+
+
+    ```sql
+    CREATE MATERIALIZED VIEW [IF NOT EXISTS] table_name [(column_name [,...])]
+    AS query [WITH [NO] DATA]
+    ```
+- `WITH NO DATA` option creates only the view definition without the popular
+- Refresh View: `REFRESH MATERIALIZED VIEW`
+
+**Conclusion**
+- **Views**:
+    - They do not take up storage but require CPU to compute each time they are invoked
+    - They are always up to date
+- **Materialized Views**:
+    - Takes up storage but only requires CPU to update
+    - May not be up to date
+- Views are preferable for simple queries or on which only simple queries will be made; Materialized views are better in cases of complex queries
+
+
+
+<br>
+<br>
+
+
+### Web Development and Databases
+The complete design of web applications with DB (namely the front-end) is beyond the scope of this discipline.<br>
+
+However, we must understand the architecture of these applications. In particular, we are expected to know **how to programmatically access a DB in the context of an application, in a secure way**:
+- **Avoiding SQL injections**
+- **Making use of transactions**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
