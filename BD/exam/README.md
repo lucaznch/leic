@@ -596,7 +596,8 @@ $$
 
 $\Pi_{\text{name, salary*1.1}} (\text{professor})$
 
-$\Pi_{\text{customer, limit-balance}} (\text{credit\_info})$
+$\Pi_{\text{customer, limit-balance}} (\text{credit})$
+
 
 <br>
 <br>
@@ -648,7 +649,7 @@ $professor \times teaches$
 
 **6. All (professor, teaches) RELATED pairs**
 
-$ \sigma_{\text{professor.id}=\text{teaches.id}} (\text{professor} \times \text{teaches}) $
+$\sigma_{\text{professor.id}=\text{teaches.id}} (\text{professor} \times \text{teaches})$
 
 | `professor.ID` | `name`      | `dept`     | `salary` | `teaches.ID` | `course` |
 | -------------- | ------------| ---------- | -------- | -----------: | -------: |
@@ -861,7 +862,7 @@ $(G1, ..., Gn) \, G (F1(), ..., Fm()) \, (r)$
 
 $G_{\text{sum}}(\text{salary}) \, (\text{works})$
 
-$G_{\text{count-distinct}}(\text{branch\_name}) \, (\text{works})$
+$G_{\text{count-distinct}}(\text{branchname}) \, (\text{works})$
 
 - **Aggregation with Grouping**
 
