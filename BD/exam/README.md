@@ -1008,7 +1008,7 @@ A-444          | 1700.0000
 3. **Rename**
 
 
-$\rho_x(1 \rightarrow accnum)(\Pi_{\text{account-number, balance}} (\text{account}))$
+$\rho_{account-number}(1 \rightarrow accnum)(\Pi_{\text{account-number, balance}} (\text{account}))$
 
 ```sql
 SELECT account_number AS accnum, balance FROM account;
