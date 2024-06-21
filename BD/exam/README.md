@@ -707,6 +707,12 @@ $\sigma_{\text{professor.id}=\text{teaches.id}} (\text{professor} \times \text{t
 | 2              | John        | Chemistry  | 65000    | 1            | BCH-101  |
 | 3              | Jill        | Physics    | 82000    | 3            | NPH-315  |
 
+
+<br>
+
+> NOTE THAT IT IS A JOIN :D
+
+<br>
 <br>
 
 **8. Easier example to see the cartesian product**
