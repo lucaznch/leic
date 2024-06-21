@@ -535,6 +535,11 @@ Sometimes, the model is not enough to represent all the requirements of our appl
 
         ![fudis-r2](media/full-disj-2-spec-rel.png)
 
+
+- **Aggregation**
+    
+    ![aggr](media/aggr-rel.png)
+
 <br>
 <br>
 <br>
