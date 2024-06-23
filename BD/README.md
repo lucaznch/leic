@@ -28,3 +28,7 @@ The second delivery is divided into six exercises:
 <br>
 
 check [p2](p2/) for details
+
+
+## Exam
+check [exam](exam/) to see a short and incomplete summary of the material for the exam
