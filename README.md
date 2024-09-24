@@ -19,3 +19,8 @@ Here you can find some projects I did during the course
 | [__IArt__](IArt/) | artificial intelligence |
 | [__BD__](BD/) | databases |
 
+### 3rd year
+| abbreviation | meaning |
+|:---:|:---|
+| [__OC__](OC/) | computer organization |
+
