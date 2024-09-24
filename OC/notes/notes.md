@@ -104,8 +104,10 @@ $$
 
 **example** - computer A runs a program in 10 seconds which has a 2GHz clock. computer B runs the same program in 6 seconds. computer B requires 1.2 times as many clock cycles as computer A for the program. what is computer B *clock rate* ?
 
+<br>
+
 $$
-{\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
+- {\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
 $$
 
 $$
@@ -120,7 +122,7 @@ $$
 <br>
 
 $$
-{\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
+- {\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
 $$
 
 $$
