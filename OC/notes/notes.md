@@ -52,7 +52,8 @@ definições de performance:
 
 <br>
 
-- **performance** em relação ao execution time:
+- **performance** em relação ao execution time
+
 $$
 \text{performance}_X = \frac{1}{\text{execution time}_X}
 $$
@@ -63,7 +64,8 @@ $$
 
 <br>
 
-- **performance relativa** (speedup):
+- **performance relativa** (speedup)
+
 $$
 \text{speedup}_X = \frac{\text{performance}_X}{\text{performance}_Y} = \frac{\text{execution time}_Y}{\text{execution time}_X} = n
 $$
@@ -95,7 +97,7 @@ the most straightforward definition of time is called wall clock time, response 
     - book def: the actual time the CPU spends computing for a specific task (does not include time spent waiting for I/O or running other programs. remember, though, that the response time experienced by the user will be the elapsed time of the program, not the CPU time)
 
 $$
-\text{CPU time} = T_{\text{CPU}} = \#\text{clock cycles} \times {T_{\text{clock cycle}}}
+\text{CPU time} = T_{\text{CPU}} = \text{\#clock cycles} \times {T_{\text{clock cycle}}}
 = \frac{\#\text{clock cycles}}{{f_{\text{clock}}}}
 $$
 
@@ -139,7 +141,7 @@ $$
 $$
 
 $$
-\#\text{clock cycles} = \sum_{i=1}^n \left({{CPI}_i} \times \#\text{instructions}_i\right)
+\#\text{clock cycles} = \sum_{i=1}^n \left({{CPI}_i} \times \text{\#instructions}_i\right)
 $$
 - **classic CPU performance equation**
 $$
@@ -339,7 +341,7 @@ categorias de instrução:
         f = (g + h) - (i + j);
         ```
 
-        ```mips-asm
+        ```assembly
         # assembly code
         add $t0, $s1, $s2   # temp_1 = g + h
         add $t1, $s3, $s4   # temp_2 = i + j
@@ -383,7 +385,7 @@ categorias de instrução:
 ### instruções de acesso a memória
 MIPS has two basic data transfer instructions for accessing memory
 
-```mips-asm
+```assembly
 lw $t0, 4($s3)      # load word from memory
 sw $t0, 8($s3)      # store word to memory
 ```
@@ -428,7 +430,7 @@ sw $t0, 8($s3)      # store word to memory
     g + h + A[8];
     ```
 
-    ```mips-asm
+    ```assembly
     lw $t0, 32($s3)     # load word
     add $s1, $s2, $t0
     ```
