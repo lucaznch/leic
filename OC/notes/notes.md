@@ -107,7 +107,7 @@ $$
 <br>
 
 $$
-- {\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
+=> {\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
 $$
 
 $$
@@ -122,7 +122,7 @@ $$
 <br>
 
 $$
-- {\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
+=> {\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
 $$
 
 $$
