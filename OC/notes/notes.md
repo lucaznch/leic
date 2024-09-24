@@ -97,28 +97,42 @@ the most straightforward definition of time is called wall clock time, response 
     - book def: the actual time the CPU spends computing for a specific task (does not include time spent waiting for I/O or running other programs. remember, though, that the response time experienced by the user will be the elapsed time of the program, not the CPU time)
 
 $$
-\text{CPU time} = T_{\text{CPU}} = \text{\#clock cycles} \times {T_{\text{clock cycle}}}
-= \frac{\#\text{clock cycles}}{{f_{\text{clock}}}}
+\text{CPU time} = T_{\text{CPU}} = \text{CPU clock cycles} \times {T_{\text{clock cycle}}}
+= \frac{\text{CPU clock cycles}}{{f_{\text{clock}}}}
 $$
 
 
 **example** - computer A runs a program in 10 seconds which has a 2GHz clock. computer B runs the same program in 6 seconds. computer B requires 1.2 times as many clock cycles as computer A for the program. what is computer B *clock rate* ?
 
 $$
-{\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}} \\
-=> \text{10 seconds} = \frac{{\text{clock cycles}_A}}{2 \times 10^9 \text{cycles per second}} \\
+{\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
+$$
+
+$$
+=> \text{10 seconds} = \frac{{\text{clock cycles}_A}}{2 \times 10^9 \text{cycles per second}}
+$$
+
+$$
 => {\text{CPU time}}_A = \text{10 seconds} \times 2 \times 10^9 \text{cycles per second} = 20 \times 10^9 \text{cycles}
 $$
 
 <br>
+<br>
 
 $$
-{\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}} \\
-=> \text{6 seconds} = \frac{1.2 \times 20 \times 10^9 \text{cycles}}{{f_{{\text{clock}}_B}}} \\
+{\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
+$$
+
+$$
+=> \text{6 seconds} = \frac{1.2 \times 20 \times 10^9 \text{cycles}}{{f_{{\text{clock}}_B}}}
+$$
+
+$$
 {f_{{\text{clock}}_B}} = \frac{1.2 \times 20 \times 10^9 \text{cycles}}{\text{6 seconds}} = \text{4 GHz}
 $$
 
-
+<br>
+<br>
 <br>
 
 características:
@@ -141,9 +155,11 @@ $$
 $$
 
 $$
-\#\text{clock cycles} = \sum_{i=1}^n \left({{CPI}_i} \times \text{\#instructions}_i\right)
+\text{clock cycles} = \sum_{i=1}^n \left({{CPI}_i} \times \text{instructions}_i\right)
 $$
+
 - **classic CPU performance equation**
+
 $$
 \text{CPU time} = \text{instruction count} \times \text{CPI} \times \text{clock cycle time}
 $$
