@@ -1,4 +1,8 @@
 # organização de computadores
+notas responsáveis para a minha negativa no primeiro teste!
+
+<br>
+
 contents:
 - [performance](#performance)
 - [instruções](#instruções)
@@ -7,7 +11,9 @@ contents:
     - [MIPS](#microprocessor-without-interlocked-pipelined-stages-mips)
         - [formato de instrução](#formatos-de-instrução-mips-32)
         - [registos](#registos)
-        - [operações](#operações)
+        - [instruções de acesso a memória](#instruções-de-acesso-a-memória)
+        - [instruções de controlo](#instruções-de-controlo)
+- [memória](#memória)
 
 ## performance
 dentro do processador:
@@ -107,8 +113,7 @@ $$
 <br>
 
 $$
-{\text{CPU time}}_A =
-\frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
+{\text{CPU time}}_A = \frac{{\text{clock cycles}_A}}{{f_{{\text{clock}}_A}}}
 $$
 
 $$
@@ -123,8 +128,7 @@ $$
 <br>
 
 $$
-{\text{CPU time}}_B = 
-1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
+{\text{CPU time}}_B = 1.2 \times \frac{{\text{clock cycles}_B}}{{f_{{\text{clock}}_B}}}
 $$
 
 $$
@@ -146,6 +150,11 @@ características:
 - **ciclo do relógio** - corresponde a uma oscilação completa do sinal.
 $$
 \text{f}_{clock} = \frac{1}{\text{T}_{clock}}
+$$
+
+
+$$
+\text{CPU time} = \text{num of clock cycles} \times \text{T}_{clock} = \frac{\text{num of clock cyles}}{\text{f}_{clock}}
 $$
 
 
@@ -172,6 +181,12 @@ $$
 \text{CPU time} = \frac{\text{instruction count} \times \text{CPI}}{f_\text{clock}}
 $$
 
+
+
+<br>
+<br>
+
+**caches**:
 
 
 
@@ -323,7 +338,10 @@ categorias de instrução:
 - o MIPS tem 32 registos (+PC, HI, LO) - cada um armazena uma palavra de 32 bits = 4 bytes
 - o banco de registos tem 2 portas de leitura e 1 porta de escrita - permite ler valores de dois registos e, simultaneamente, escrever um valor num registo
 
-### operações
+<br>
+<br>
+
+**instruções**
 
 - **R-format example** - `op6 | rs5 | rt5 | rd5 | sa5 | funct6 `
     - `add $t0, $s1, $s2`
@@ -434,7 +452,7 @@ sw $t0, 8($s3)      # store word to memory
 
 - MIPS é **Big-Endian** => most-significant byte (big end) at lowest address of a word
 ```text
-0x12345678
+e.g. 0x12345678
     ...
     address X:      0x12     - most significant byte (lowest address)
     address X+1:    0x34
@@ -444,223 +462,116 @@ sw $t0, 8($s3)      # store word to memory
 ```
 
 
-- example
-    - **g** in `$s1`, **g** in `$s2`, **base address of A** in `$s3`
-    ```c
-    g + h + A[8];
+- examples
+    - **g** in `$s1`, **h** in `$s2`, **base address of A** in `$s3`
+        ```c
+        g = h + A[8];
+        ```
+
+        ```assembly
+        lw $t0, 32($s3)     # load word
+        add $s1, $s2, $t0
+        ```
+
+        - array indexing - como em MIPS a memória é endereçada em bytes e cada elemento em A é uma palavra (4 bytes) => o index 8, é a oitava palavra, e precisa de ser multiplicado por 4 para ter o offset correto
+
+        ```text
+                                                                        |
+                                                                        v
+        | b0 | b1 | b2 | b3 |       ...         | b28 | b29 | b30 | b31 | b32 | b33 | b34 | b35 |
+        |      A[0]         |       ...         |         A[7]          |        A[8]           |
+        ```
+    - **h** in `$s2`, **base address of A** in `$s3`
+        ```c
+            A[12] = h + A[8];
+        ```
+
+        ```assembly
+            lw $t0, 32($s3)     # load A[8] (8 x 4 = 32)
+            add $t0, $s2, $t0   # add A[8] + h
+            sw $t0, 48($s3)     # store in A[12] (12 x 4 = 48)
+        ```
+
+- aligned memory access
+
+```text
+| width                || b0 | b1 | b2 | b3 || b4 | b5 | b6 | b7 ||
+| 1 byte               ||  v |  v |  v |  v || v  |  v |  v |  v ||
+| 2 bytes (half word)  ||    v    |    v    ||     v   |    v    ||
+| 4 bytes (word)       ||         v         ||         v         ||
+| 8 words (dword)      ||                    v                   ||
+```
+
+
+### instruções de controlo
+
+**J-instruction** - `op6 | jump-target26`
+
+- **jump** - `j <target>`
+    - jumps to a specific address
+    - the address is calculated by shifting the 26-bit immediate value in the instruction left by 2 bits (to account for the word-aligned nature of instructions) and combining it with the upper 4 bits of the current program counter (PC) => só podemos saltar para uma certa secção do programa
+
+    ```text
+    e.g. PC = [0101] 1011 0110 1101 0101 1010 1010 0110 (32 bits)
+
+    se efetuarmos um Jump para a instrução 0101 0011 0101 0010 0001 0000 01 (26 bits)
+
+    vamos acabar no endereço [0101] 0101 0011 0101 0010 0001 0000 01{00}
+
     ```
 
-    ```assembly
-    lw $t0, 32($s3)     # load word
-    add $s1, $s2, $t0
-    ```
+- **jump and link** - `jal <target>`
+    - used to call a subroutine (i.e., a function or a procedure). in addition to jumping to the target address, it also saves the return address (the address of the instruction after jal) in the `$ra` (return address) register
+    - it calculates the target address in the same way as j, but it also saves the return address (PC + 4) in $ra.
 
-
-
-
-
-
-
-
-
-
-
+- **jump register** - `jr <$register>`
+    -  jumps to an address stored in a register. this is typically used to return from a subroutine when the return address is stored in the $ra register.
+    - it transfers control to the address stored in the specified register (commonly $ra for subroutine return)
 
 <br>
-<br>
-<br>
-<br>
 
-## direct-mapped cache
-- how do we know if a data item is in the cache?
-    - if it is, how do we find it?
+- **branching (I-format)** - `| op6 | rs5 | rt5 | offset16 |`
 
-> simple cache in which the processor requests are each one word and the blocks also consist of a single word.
+    - **branch if equal** - `beq <sourceregister1>, <sourceregister2>, <target>`
+        - funciona como `if (rs == rt) branch to target`
 
-the simplest way to assign a location in the cache for each word in memory is to assign the cache location based on the address of the word in memory.
-this cache structure is called direct mapped, since each memory location is mapped directly to exactly one location in the cache.
+    - **branch if not equal** - `bnq <sourceregister1>, <sourceregister2>, <target>`
+        - funciona como `if (rs != rt) branch to target`
 
-the typical mapping between addresses and cache locations for a direct- mapped cache is usually simple.
-for example, almost all direct-mapped caches use this mapping to find a block:
-$$
-\text{block index} = \text{(block address)} \% \text{(number of blocks in the cache)}
-$$
+    - Ao fazermos um branch, o endereço de destino é dado por
+        - **Target address = PC + offset × 4**
 
-> if the number of entries in the cache is a power of 2, then modulo can be computed simply by using the low-order log2 (cache size in blocks) bits of the address
+se quisermos efetuar outro tipo de condições, como maior e menor, temos de usar as instruções _set if less than_ ou _set if less than immediate_.
+realçar que não existem instruções no hardware para efetuar saltos com comparações `>`, `<`, `>=`, `<=`, etc.
 
+- _set if less than_: **slt rd, rs, rt**
+  - Funciona como `if (rs < rt) rd = 1; else rd = 0`
+- _set if less than immediate_: **slti rd, rs, constant**  
+  - Funciona como `if (rs < constant) rd = 1; else rd = 0`
 
-
-because each cache location can contain the contents of a number of different memory locations, how do we know whether the data in the cache corresponds to a requested word? that is, *how do we know whether a requested word is in the cache or not*? we answer this question by adding a set of **tags** to the cache.
-- the tags contain the address information required to identify whether a word in the cache corresponds to the requested word. **the tag needs only to contain the upper portion of the address**, **corresponding to the bits that are not used as an index into the cache**.
-
-we also need a way to recognize that a cache block does not have valid information. for instance, when a processor starts up, the cache does not have good data, and the tag fields will be meaningless. even after executing many instructions, some of the cache entries may still be empty. 
-thus, we need to know that the tag should be ignored for such entries. the most common method is to add a valid bit to indicate whether an entry contains a valid address. 
-if the bit is not set, there cannot be a match for this block.
-
-
-> we need only have the upper 2 of the 5 address bits in the tag, since the lower 3-bit index field of the address selects the block. architects omit the index bits because they are redundant, since by definition the index field of any address of a cache block must be that block number.
-
-> because there are eight words in the cache, an address X maps to the direct-mapped cache word X modulo 8.
-
-
-
-decimal address of reference | binary address of reference | hit or miss | assigned cache block
------------------------------|-----------------------------|-------------|---------------------
-22                           | 10110                       | miss        | (10110 % 8) = 110
-26                           | 11010                       | miss        | (11010 % 8) = 010
-22                           | 10110                       | hit         | (10110 % 8) = 110
-26                           | 11010                       | hit         | (11010 % 8) = 010
-16                           | 10000                       | miss        | (10000 % 8) = 010
-3                            | 00011                       | miss        | (00011 % 8) = 000
-
-> above is a sequence of six memory references to an empty eight-block cache, including the action for each reference.
-
-index | V | tag | data
-------|---|-----|--------------
-000   | Y | 10  | memory(10000)
-001   | N |     |
-010   | Y | 11  | memory(11010)
-011   | Y | 00  | **memory(00011)**
-100   | N |     |
-101   | N |     |
-110   | Y | 10  | memory(10110)
-111   | N |     |
-
-
-
-
-the index of a cache block, together with the tag contents of that block, uniquely specifies the memory address of the word contained in the cache block.
-because the index field is used as an address to reference the cache, and because an n-bit field has 2n values, the total number of entries in a direct-mapped cache must be a power of 2.
-in the MIPS architecture, since words are aligned to multiples of four bytes, the least significant two bits of every address specify a byte within a word.
-hence, the least significant two bits are ignored when selecting a word in the block.
-the **total number of bits needed for a cache is a function of the cache size and the address size**, because the cache includes both the storage for the data and the tags.
-the size of the block above was one word, but normally it is several.
-for the following situation:
-- 32-bit addresses
-- a direct-mapped cache
-- the cache size is $2^n$ blocks, so $n$ bits are used for the index
-- the block size is $2^m$ words ($2^{m+2}$ bytes), so $m$ bits are used for the word within the block, and two bits are used for the byte part of the address the size of the tag field is:
-
-$$
-32 - (n + m + 2)
-$$
-
-the total number of bits in a direct-mapped cache is
-
-$$
-2^{n} \times \text{(block size + tag size + valid field size)}
-$$
+use in combination with beq, bne
+```assembly
+    slt $t0, $s1, $s2       # if ($s1 < $s2)
+    bne $t0, $zero, L       # branch to L
+```
 
 <br>
 <br>
 
-**address**
+apesar de um _Branch_ e um _Jump_ fazerem sensivelmente a mesma coisa, um _Jump_ refere-se a um **salto absoluto e incondicional**, enquanto que um Branch é um **salto relativo e condicional**.
+para além disso, podemos não conseguir fazer saltos **muito longos**: num _jump_, temos $26$ bits, enquanto que num _branch_ temos $16$ bits, ambos inferiores aos $30$ bits necessários para endereçar todas as instruções possíveis.
 
-tag             | index       | byte offset
-----------------|-------------|------------
-\| 31 ... 12 \| | 11 ... 2 \| | 1 . 0     \|
+caso tentemos fazer um _branch_ para uma instrução que está demasiado longe, o _assembler_ vai reescrever o nosso código com um _jump_:
 
-> tag(20), index(10), offset(2)
+```assembly
+    beq $s0, $s0, L1  # L1 está muito longe!
+```
 
+o _assembler_ vai inverter a condição e inserir um _jump_:
 
-i    |valid | tag | data 
------|------|-------|------
-0    |      |       |     
-1    |      |       |
-...  |      | (20)  | (32)
-1022 |      |       |
-1023 |      |       |
-
-
-
-
-since the block size is 2m words (2m⫹5 bits), and we need 1 bit for the valid field, the number of bits in such a cache is
-
-$$
-2^{n} \times (2^{m} \times 32 + (32 - n - m - 2) + 1)
-= 2n \times (2^{m} \times 32 + 31 - n + m)
-$$
-
-> **although this is the actual size in bits, the naming convention is to exclude the size of the tag and valid field and to count only the size of the data**. Thus, the cache in is called a 4 KiB cache.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-ciclo do processador:
-1. fetch: ler instrução da memória
-2. decode: interpretar a instrução
-3. execute: executar a instrução
-4. store: armazenar o resultado
-
-> unidade de controlo, unidade de dados, alu, registos, cache(sram), ram(dram), disco (ssd/hdd), cisc vs risc, bus, PC, MIPS, ISA, big endian. ROM RAM
-
-complemento p 2 negativo overflow 4 bits => -8 (1000), 7 (0111)
-
-
-
-
-
-You raise a good point! In a write-back cache policy, if you are writing to a cache line that isn't currently loaded in cache, it might seem unnecessary to load it from RAM just to overwrite it. Here's how this situation is typically handled:
-
-Write-Allocate vs. No-Write Allocate
-Write-Allocate (or Fetch on Write):
-
-In this approach, when there's a cache miss on a write, the entire cache line is loaded from RAM into the cache before performing the write.
-This is useful if subsequent reads to that memory address are expected. It optimizes for cases where data is often read after being written.
-No-Write Allocate (or Write-Through):
-
-In this approach, when there's a cache miss on a write, the write is performed directly to RAM, bypassing the cache.
-This avoids loading the cache line just to overwrite it, which can be more efficient if writes are infrequent or if the written data won’t be used immediately afterward.
-Summary:
-Write-Allocate: Loads the cache line from RAM into cache before writing. This is beneficial if you expect to read the data soon after writing.
-No-Write Allocate: Writes directly to RAM on a miss without loading the cache line first. This is more efficient when you don't expect to read the written data immediately.
-The choice between these two strategies depends on the specific application and expected access patterns. In many systems, the write-allocate approach is used, but in cases where writes are more common than reads, no-write allocate can be more efficient.
-
-
-
-
-
-
-
-
+```assembly
+    bne $s0, $s1, L2  # A condição é invertida para que
+    j L1              # a instrução seguinte seja o salto.
+L2: ...               # L2 aponta para as instruções
+                      # que se seguiam ao beq.
+```
