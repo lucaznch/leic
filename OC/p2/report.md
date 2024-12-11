@@ -466,23 +466,3 @@ lscpu:
 
 - correto exceto para associatividade da L2 (deu 8, e o verdadeiro é 4) 
 
-
-
-<br>
-<br>
-
-$$
-\sigma_{populacao} = \sqrt{\frac{1}{n-1}\cdot \sum_{i=1}^n (x_i - \bar{x})^2}
-$$
-
-
-$$
-\mathcal{N}
-$$
-
-
-
-
-
-
-
